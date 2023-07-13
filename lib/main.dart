@@ -1,3 +1,5 @@
+import 'package:fast_fuel_tag/screens/fileUpload.dart';
+// import 'package:fast_fuel_tag/screens/fileview.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -10,10 +12,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Fast Fuel Tag',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        primarySwatch: Colors.blue,
       ),
+      home: const FileUpload(),
     );
   }
 }
