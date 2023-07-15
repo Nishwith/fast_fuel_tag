@@ -1,5 +1,5 @@
 import 'dart:ui';
-
+import 'package:fast_fuel_tag/screens/registration.dart';
 import 'package:flutter/material.dart';
 
 // ignore: camel_case_types
@@ -40,7 +40,13 @@ class _fileViewState extends State<fileView> {
             IconButton(
               iconSize: 34,
               icon: const Icon(Icons.menu),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const RegistrationPage()),
+                );
+              },
             ),
           ],
           centerTitle: true,

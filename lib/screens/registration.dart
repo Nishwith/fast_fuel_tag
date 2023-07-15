@@ -1,16 +1,25 @@
 import 'dart:ui';
-import 'package:fast_fuel_tag/screens/fileView.dart';
+import 'package:fast_fuel_tag/screens/FileView.dart';
+import 'package:fast_fuel_tag/screens/VehiclesPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-class FileUpload extends StatefulWidget {
-  const FileUpload({Key? key}) : super(key: key);
+class RegistrationPage extends StatefulWidget {
+  const RegistrationPage({super.key});
 
   @override
-  State<FileUpload> createState() => _FileUploadState();
+  State<RegistrationPage> createState() => _RegistrationPageState();
 }
 
-class _FileUploadState extends State<FileUpload> {
+class _RegistrationPageState extends State<RegistrationPage> {
+  // ignore: prefer_typing_uninitialized_variables
+  var selectedVehicleType;
+  final List<String> _vehicle = <String>[
+    'Two Wheeler',
+    'Geared Two Wheeler',
+    'Four Wheeler',
+    'Heavy Vehicle',
+  ];
   bool _showAppBar = true;
   final ScrollController _scrollController = ScrollController();
 
@@ -57,7 +66,7 @@ class _FileUploadState extends State<FileUpload> {
                   },
                 ),
                 title: const Text(
-                  'DIGILOCKER',
+                  'REGISTRATION',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 34,
@@ -69,7 +78,13 @@ class _FileUploadState extends State<FileUpload> {
                   IconButton(
                     iconSize: 34,
                     icon: const Icon(Icons.menu),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const YourVehicles()),
+                      );
+                    },
                   ),
                 ],
                 centerTitle: true,
@@ -97,7 +112,6 @@ class _FileUploadState extends State<FileUpload> {
                   filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
                   child: Container(
                     height: MediaQuery.of(context).size.height,
-                    clipBehavior: Clip.antiAlias,
                     decoration: ShapeDecoration(
                       color: const Color.fromARGB(255, 255, 255, 255)
                           .withOpacity(0.5),
@@ -121,6 +135,122 @@ class _FileUploadState extends State<FileUpload> {
                             image: AssetImage("assets/images/reg.png"),
                             height: 130,
                             fit: BoxFit.fill,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 25),
+                          child: Container(
+                            width: MediaQuery.of(context).size.width / 1.2,
+                            clipBehavior: Clip.antiAlias,
+                            decoration: ShapeDecoration(
+                              color: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.all(2.0),
+                                    child: Text(
+                                      'Vehicle Number',
+                                      style: TextStyle(
+                                        color: Color.fromARGB(168, 0, 0, 0),
+                                        fontSize: 14,
+                                        fontFamily: 'Inter',
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                    ),
+                                  ),
+                                  TextField(
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 15,
+                                        fontFamily: 'Inter',
+                                        fontWeight: FontWeight.w200,
+                                      ),
+                                      keyboardType: TextInputType.name,
+                                      decoration: InputDecoration(
+                                        hintText: 'Enter your Vehicle Number',
+                                      )),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 25),
+                          child: Container(
+                            width: MediaQuery.of(context).size.width / 1.2,
+                            clipBehavior: Clip.antiAlias,
+                            decoration: ShapeDecoration(
+                              color: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.all(2.0),
+                                    child: Text(
+                                      'Vehicle Type',
+                                      style: TextStyle(
+                                        color: Color.fromARGB(168, 0, 0, 0),
+                                        fontSize: 14,
+                                        fontFamily: 'Inter',
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                      padding: const EdgeInsets.all(2.0),
+                                      child: DropdownButtonFormField<String>(
+                                        items: _vehicle
+                                            .map(
+                                              (value) => DropdownMenuItem(
+                                                value: value,
+                                                child: Text(
+                                                  value,
+                                                  style: const TextStyle(
+                                                      color: Color.fromARGB(
+                                                          255, 0, 0, 0),
+                                                      fontSize: 14,
+                                                      fontFamily: 'montserrat'),
+                                                ),
+                                              ),
+                                            )
+                                            .toList(),
+                                        // ignore: non_constant_identifier_names
+                                        onChanged: (SelectedCity) {
+                                          setState(() {
+                                            selectedVehicleType = SelectedCity;
+                                          });
+                                        },
+                                        isExpanded: true,
+                                        value: selectedVehicleType,
+                                        decoration: const InputDecoration(
+                                            hintText:
+                                                'Select your Vehicle Type',
+                                            hintStyle: TextStyle(
+                                                fontSize: 14,
+                                                fontFamily: 'montserrat')),
+                                        validator: (value) {
+                                          if (value == null) {
+                                            return 'Please select a city';
+                                          }
+                                          return null;
+                                        },
+                                      )),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                         Padding(
@@ -161,7 +291,7 @@ class _FileUploadState extends State<FileUpload> {
                                       Padding(
                                         padding: EdgeInsets.all(2.0),
                                         child: Text(
-                                          'Upload Vehicle RC',
+                                          'Upload your Vehicle RC',
                                           style: TextStyle(
                                             color: Colors.black,
                                             fontSize: 15,
@@ -219,123 +349,7 @@ class _FileUploadState extends State<FileUpload> {
                                       Padding(
                                         padding: EdgeInsets.all(2.0),
                                         child: Text(
-                                          'Upload Driving License',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 15,
-                                            fontFamily: 'Inter',
-                                            fontWeight: FontWeight.w200,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Icon(
-                                    Icons.cloud_upload,
-                                    size: 40,
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 25),
-                          child: Container(
-                            width: MediaQuery.of(context).size.width / 1.2,
-                            height: 65,
-                            clipBehavior: Clip.antiAlias,
-                            decoration: ShapeDecoration(
-                              color: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                            ),
-                            child: const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.all(2.0),
-                                        child: Text(
-                                          'Vehicle Pollution Certificate',
-                                          style: TextStyle(
-                                            color: Color.fromARGB(168, 0, 0, 0),
-                                            fontSize: 14,
-                                            fontFamily: 'Inter',
-                                            fontWeight: FontWeight.w800,
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.all(2.0),
-                                        child: Text(
-                                          'Upload Vehicle Pollution Certificate',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 15,
-                                            fontFamily: 'Inter',
-                                            fontWeight: FontWeight.w200,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Icon(
-                                    Icons.cloud_upload,
-                                    size: 40,
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 25),
-                          child: Container(
-                            width: MediaQuery.of(context).size.width / 1.2,
-                            height: 65,
-                            clipBehavior: Clip.antiAlias,
-                            decoration: ShapeDecoration(
-                              color: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                            ),
-                            child: const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.all(2.0),
-                                        child: Text(
-                                          'Vehicle Insurance',
-                                          style: TextStyle(
-                                            color: Color.fromARGB(168, 0, 0, 0),
-                                            fontSize: 14,
-                                            fontFamily: 'Inter',
-                                            fontWeight: FontWeight.w800,
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.all(2.0),
-                                        child: Text(
-                                          'Upload Vehicle Insurance',
+                                          'Upload your Driving License',
                                           style: TextStyle(
                                             color: Colors.black,
                                             fontSize: 15,
@@ -374,7 +388,7 @@ class _FileUploadState extends State<FileUpload> {
                               child: const Padding(
                                 padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
                                 child: Text(
-                                  "Upload Documents",
+                                  "Register",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Colors.white,
