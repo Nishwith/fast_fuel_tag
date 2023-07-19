@@ -1,5 +1,5 @@
 import 'dart:ui';
-import 'package:fast_fuel_tag/screens/fileView.dart';
+import 'package:fast_fuel_tag/screens/file_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -57,7 +57,7 @@ class _FileUploadState extends State<FileUpload> {
                   },
                 ),
                 title: const Text(
-                  'DIGILOCKER',
+                  'FILELOCKER',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 34,
@@ -100,11 +100,11 @@ class _FileUploadState extends State<FileUpload> {
                     clipBehavior: Clip.antiAlias,
                     decoration: ShapeDecoration(
                       color: const Color.fromARGB(255, 255, 255, 255)
-                          .withOpacity(0.5),
+                          .withOpacity(0.35),
                       shape: RoundedRectangleBorder(
                         side: BorderSide(
                           width: 2,
-                          color: Colors.white.withOpacity(0.25),
+                          color: Colors.white.withOpacity(0.4),
                         ),
                         borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(61),

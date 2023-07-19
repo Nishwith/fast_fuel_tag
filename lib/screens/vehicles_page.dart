@@ -1,5 +1,5 @@
 import 'dart:ui';
-import 'package:fast_fuel_tag/screens/Transaction.dart';
+import 'package:fast_fuel_tag/screens/transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -99,11 +99,11 @@ class _YourVehiclesState extends State<YourVehicles> {
                           clipBehavior: Clip.antiAlias,
                           decoration: ShapeDecoration(
                             color: const Color.fromARGB(255, 255, 255, 255)
-                                .withOpacity(0.5),
+                                .withOpacity(0.35),
                             shape: RoundedRectangleBorder(
                               side: BorderSide(
                                 width: 2,
-                                color: Colors.white.withOpacity(0.35),
+                                color: Colors.white.withOpacity(0.4),
                               ),
                               borderRadius: const BorderRadius.only(
                                 topLeft: Radius.circular(61),
@@ -196,7 +196,7 @@ class _YourVehiclesState extends State<YourVehicles> {
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                   color: Colors.white,
-                                                  fontSize: 16,
+                                                  fontSize: 18,
                                                   fontFamily: 'Inter',
                                                   fontWeight: FontWeight.w800,
                                                 ),
@@ -290,7 +290,7 @@ class _YourVehiclesState extends State<YourVehicles> {
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                   color: Colors.white,
-                                                  fontSize: 16,
+                                                  fontSize: 18,
                                                   fontFamily: 'Inter',
                                                   fontWeight: FontWeight.w800,
                                                 ),
@@ -376,7 +376,7 @@ class _YourVehiclesState extends State<YourVehicles> {
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                   color: Colors.white,
-                                                  fontSize: 16,
+                                                  fontSize: 18,
                                                   fontFamily: 'Inter',
                                                   fontWeight: FontWeight.w800,
                                                 ),

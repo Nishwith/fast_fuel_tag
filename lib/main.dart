@@ -1,4 +1,4 @@
-import 'package:fast_fuel_tag/screens/FileUpload.dart';
+import 'package:fast_fuel_tag/screens/file_upload.dart';
 import 'package:flutter/material.dart';
 
 void main() {

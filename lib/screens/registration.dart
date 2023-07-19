@@ -1,6 +1,6 @@
 import 'dart:ui';
-import 'package:fast_fuel_tag/screens/FileView.dart';
-import 'package:fast_fuel_tag/screens/VehiclesPage.dart';
+import 'package:fast_fuel_tag/screens/file_view.dart';
+import 'package:fast_fuel_tag/screens/vehicles_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -69,7 +69,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   'REGISTRATION',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 34,
+                    fontSize: 28,
                     fontFamily: 'Inter',
                     fontWeight: FontWeight.w700,
                   ),
@@ -114,11 +114,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     height: MediaQuery.of(context).size.height,
                     decoration: ShapeDecoration(
                       color: const Color.fromARGB(255, 255, 255, 255)
-                          .withOpacity(0.5),
+                          .withOpacity(0.35),
                       shape: RoundedRectangleBorder(
                         side: BorderSide(
                           width: 2,
-                          color: Colors.white.withOpacity(0.25),
+                          color: Colors.white.withOpacity(0.4),
                         ),
                         borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(61),

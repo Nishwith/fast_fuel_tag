@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter/physics.dart';
 import 'package:flutter/rendering.dart';
 
 class TranactionPage extends StatefulWidget {
@@ -137,11 +136,11 @@ class _TranactionPageState extends State<TranactionPage> {
                       clipBehavior: Clip.antiAlias,
                       decoration: ShapeDecoration(
                         color: const Color.fromARGB(255, 255, 255, 255)
-                            .withOpacity(0.5),
+                            .withOpacity(0.35),
                         shape: RoundedRectangleBorder(
                           side: BorderSide(
                             width: 2,
-                            color: Colors.white.withOpacity(0.25),
+                            color: Colors.white.withOpacity(0.4),
                           ),
                           borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(61),
@@ -164,15 +163,18 @@ class _TranactionPageState extends State<TranactionPage> {
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 30,
-                                  fontWeight: FontWeight.w900,
+                                  fontWeight: FontWeight.w800,
                                 ),
                               ),
                             ),
                             const SizedBox(
-                              height: 200,
-                              child: Image(
-                                image:
-                                    AssetImage("assets/images/transaction.png"),
+                              height: 150,
+                              width: 150,
+                              child: Center(
+                                child: Image(
+                                  image: AssetImage(
+                                      "assets/images/transaction.png"),
+                                ),
                               ),
                             ),
                             ListView.builder(
