@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "490233824809",
+    "project_id": "fastfueltag",
+    "storage_bucket": "fastfueltag.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:490233824809:android:919cb115ae87f217a43e38",
+        "android_client_info": {
+          "package_name": "com.example.fast_fuel_tag"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "490233824809-rkn17kf8va099vcjidr2abdkf05839p3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDADuiphQlYfwwMDMGYoVCRfqg87gpgQY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "490233824809-rkn17kf8va099vcjidr2abdkf05839p3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "490233824809-jf066c08411366mg05t7i5l843cf5dip.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.fastFuelTag.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
