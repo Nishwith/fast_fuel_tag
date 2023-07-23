@@ -1,6 +1,6 @@
 import 'dart:ui';
-import 'package:fast_fuel_tag/screens/file_locker/file_view.dart';
 import 'package:fast_fuel_tag/screens/home_pages/vehicles_page.dart';
+import 'package:fast_fuel_tag/screens/vehicle_registration/registration_pay.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -374,7 +374,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const fileView()),
+                                  builder: (context) =>
+                                      const RegistrationPay()),
                             );
                           },
                           child: Padding(

@@ -1,7 +1,7 @@
 import 'package:fast_fuel_tag/screens/file_locker/file_locker.dart';
 import 'package:fast_fuel_tag/screens/file_locker/file_upload.dart';
 import 'package:fast_fuel_tag/screens/file_locker/file_view.dart';
-import 'package:fast_fuel_tag/screens/home_pages/recharge1.dart';
+import 'package:fast_fuel_tag/screens/home_pages/recharge.dart';
 import 'package:fast_fuel_tag/screens/home_pages/vehicles_page.dart';
 import 'package:fast_fuel_tag/screens/vehicle_registration/registration.dart';
 import 'package:fast_fuel_tag/screens/home_pages/transaction.dart';
