@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:fast_fuel_tag/screens/home_pages/homescreen.dart';
 import 'package:fast_fuel_tag/screens/vehicle_registration/registration.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,7 @@ class _fileViewState extends State<fileView> {
     final metadata = await ref.getMetadata();
     final contentType = metadata.contentType;
     String? extension;
-    if (contentType == 'image/jpeg') {
+    if (contentType == 'image/jpeg' || contentType == 'image/png') {
       extension = 'jpg';
     } else if (contentType == 'application/pdf') {
       extension = 'pdf';
@@ -87,8 +88,7 @@ class _fileViewState extends State<fileView> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => const RegistrationPage()),
+                  MaterialPageRoute(builder: (context) => const HomeScreen()),
                 );
               },
             ),
@@ -166,7 +166,7 @@ class _fileViewState extends State<fileView> {
                                         child: Row(
                                           mainAxisSize: MainAxisSize.min,
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             Column(
                                               crossAxisAlignment:
@@ -233,7 +233,7 @@ class _fileViewState extends State<fileView> {
                                         child: Row(
                                           mainAxisSize: MainAxisSize.min,
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             Column(
                                               crossAxisAlignment:
@@ -300,7 +300,7 @@ class _fileViewState extends State<fileView> {
                                         child: Row(
                                           mainAxisSize: MainAxisSize.min,
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             Column(
                                               crossAxisAlignment:
@@ -367,7 +367,7 @@ class _fileViewState extends State<fileView> {
                                         child: Row(
                                           mainAxisSize: MainAxisSize.min,
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             Column(
                                               crossAxisAlignment:

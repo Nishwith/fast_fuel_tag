@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 class TranactionPage extends StatefulWidget {
-  const TranactionPage({Key? key}) : super(key: key);
-
+  const TranactionPage({Key? key, required this.vehicleNumber})
+      : super(key: key);
+  final String vehicleNumber;
   @override
   State<TranactionPage> createState() => _TranactionPageState();
 }
@@ -55,9 +56,9 @@ class _TranactionPageState extends State<TranactionPage> {
                   Navigator.pop(context);
                 },
               ),
-              title: const Text(
-                'TS 09 AZ 9999',
-                style: TextStyle(
+              title: Text(
+                widget.vehicleNumber,
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 28,
                   fontFamily: 'Inter',

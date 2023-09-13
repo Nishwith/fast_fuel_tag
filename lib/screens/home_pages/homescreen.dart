@@ -1,10 +1,7 @@
 import 'package:fast_fuel_tag/screens/file_locker/file_locker.dart';
-import 'package:fast_fuel_tag/screens/file_locker/file_upload.dart';
-import 'package:fast_fuel_tag/screens/file_locker/file_view.dart';
 import 'package:fast_fuel_tag/screens/home_pages/recharge.dart';
 import 'package:fast_fuel_tag/screens/home_pages/vehicles_page.dart';
 import 'package:fast_fuel_tag/screens/vehicle_registration/registration.dart';
-import 'package:fast_fuel_tag/screens/home_pages/transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
@@ -19,17 +16,17 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final items = const [
     Icon(
-      Icons.lock_clock_outlined,
+      Icons.file_open,
       color: Colors.purple,
       size: 40,
     ),
     Icon(
-      Icons.app_registration,
+      Icons.library_add_outlined,
       color: Colors.purple,
       size: 40,
     ),
     Icon(
-      Icons.history_rounded,
+      Icons.home_filled,
       color: Colors.purple,
       size: 40,
     ),
@@ -40,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ),
   ];
 
-  int index = 1;
+  int index = 2;
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: getSelectedWidget(index: index)),
       ),
       bottomNavigationBar: CurvedNavigationBar(
-        color: Colors.white,
+        color: const Color.fromARGB(255, 240, 240, 240),
         items: items,
         index: index,
         onTap: (selectedIndex) {
@@ -72,9 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         height: 50.0,
         backgroundColor: Colors.purple,
-
         animationDuration: const Duration(milliseconds: 200),
-        // animationCurve: ,
       ),
     );
   }
@@ -89,19 +84,10 @@ class _HomeScreenState extends State<HomeScreen> {
         widget = const RegistrationPage();
         break;
       case 2:
-        widget = const TranactionPage();
+        widget = const YourVehicles();
         break;
       case 3:
         widget = const Recharge();
-        break;
-      case 4:
-        widget = const FileUpload();
-        break;
-      case 5:
-        widget = const fileView();
-        break;
-      case 6:
-        widget = const YourVehicles();
         break;
       default:
         widget = const FileLocker();

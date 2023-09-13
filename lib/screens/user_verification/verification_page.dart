@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:fast_fuel_tag/screens/home_pages/homescreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
