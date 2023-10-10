@@ -1,15 +1,13 @@
-import 'package:fast_fuel_tag/screens/file_locker/file_locker.dart';
-import 'package:fast_fuel_tag/screens/file_locker/file_upload.dart';
-import 'package:fast_fuel_tag/screens/file_locker/file_view.dart';
-import 'package:fast_fuel_tag/screens/home_pages/recharge1.dart';
+import 'package:fast_fuel_tag/screens/home_pages/recharge.dart';
 import 'package:fast_fuel_tag/screens/home_pages/vehicles_page.dart';
 import 'package:fast_fuel_tag/screens/vehicle_registration/registration.dart';
-import 'package:fast_fuel_tag/screens/home_pages/transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  final int initialIndex;
+
+  const HomeScreen({Key? key, required this.initialIndex}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
@@ -17,19 +15,22 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late int index;
+
+  @override
+  void initState() {
+    super.initState();
+    index = widget.initialIndex;
+  }
+
   final items = const [
     Icon(
-      Icons.lock_clock_outlined,
+      Icons.library_add_outlined,
       color: Colors.purple,
       size: 40,
     ),
     Icon(
-      Icons.app_registration,
-      color: Colors.purple,
-      size: 40,
-    ),
-    Icon(
-      Icons.history_rounded,
+      Icons.home_filled,
       color: Colors.purple,
       size: 40,
     ),
@@ -39,8 +40,6 @@ class _HomeScreenState extends State<HomeScreen> {
       size: 40,
     ),
   ];
-
-  int index = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: getSelectedWidget(index: index)),
       ),
       bottomNavigationBar: CurvedNavigationBar(
-        color: Colors.white,
+        color: const Color.fromARGB(255, 240, 240, 240),
         items: items,
         index: index,
         onTap: (selectedIndex) {
@@ -72,9 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         height: 50.0,
         backgroundColor: Colors.purple,
-
         animationDuration: const Duration(milliseconds: 200),
-        // animationCurve: ,
       ),
     );
   }
@@ -83,28 +80,16 @@ class _HomeScreenState extends State<HomeScreen> {
     Widget widget;
     switch (index) {
       case 0:
-        widget = const FileLocker();
-        break;
-      case 1:
         widget = const RegistrationPage();
         break;
-      case 2:
-        widget = const TranactionPage();
-        break;
-      case 3:
-        widget = const Recharge();
-        break;
-      case 4:
-        widget = const FileUpload();
-        break;
-      case 5:
-        widget = const fileView();
-        break;
-      case 6:
+      case 1:
         widget = const YourVehicles();
         break;
+      case 2:
+        widget = const Recharge();
+        break;
       default:
-        widget = const FileLocker();
+        widget = const YourVehicles();
         break;
     }
     return widget;

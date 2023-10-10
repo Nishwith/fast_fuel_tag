@@ -1,17 +1,27 @@
 import 'dart:ui';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fast_fuel_tag/screens/home_pages/homescreen.dart';
+import 'package:fast_fuel_tag/screens/user_verification/singupscreen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
-class Verify extends StatefulWidget {
-  const Verify({super.key});
+class VerificationScreen extends StatefulWidget {
+  final String email;
+  final String phoneNum;
+  final String userName;
+
+  const VerificationScreen(
+      {Key? key,
+      required this.email,
+      required this.phoneNum,
+      required this.userName})
+      : super(key: key);
 
   @override
-  State<Verify> createState() => _VerifyState();
+  State<VerificationScreen> createState() => _VerificationScreenState();
 }
 
-class _VerifyState extends State<Verify> {
+class _VerificationScreenState extends State<VerificationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +40,6 @@ class _VerifyState extends State<Verify> {
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
                 child: Container(
-                  // height: MediaQuery.of(context).size.height / 1.099,
                   clipBehavior: Clip.antiAlias,
                   decoration: ShapeDecoration(
                     color: const Color.fromARGB(255, 255, 255, 255)
@@ -55,7 +64,6 @@ class _VerifyState extends State<Verify> {
                           child: Text('Verify Email',
                               style: TextStyle(
                                 fontSize: 34.0,
-                                // have to add font
                                 fontWeight: FontWeight.w700,
                                 color: Colors.white,
                               )),
@@ -68,127 +76,67 @@ class _VerifyState extends State<Verify> {
                             height: 170.0,
                             fit: BoxFit.fill),
                       ),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            SizedBox(
-                              height: 68,
-                              width: 64,
-                              child: TextFormField(
-                                onChanged: (value) {
-                                  if (value.length == 1) {
-                                    FocusScope.of(context).nextFocus();
-                                  }
-                                },
-                                cursorColor: Colors.black,
-                                onSaved: (pin1) {},
-                                decoration:
-                                    const InputDecoration(hintText: "*"),
-                                style:
-                                    Theme.of(context).textTheme.headlineMedium,
-                                keyboardType: TextInputType.number,
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(right: 20, left: 20),
+                              child: Text(
+                                "A verification email has been sent to ${widget.email}.",
                                 textAlign: TextAlign.center,
-                                inputFormatters: [
-                                  LengthLimitingTextInputFormatter(1),
-                                  FilteringTextInputFormatter.digitsOnly,
-                                ],
+                                style: const TextStyle(
+                                    fontSize: 24,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500),
                               ),
                             ),
-                            SizedBox(
-                              height: 68,
-                              width: 64,
-                              child: TextFormField(
-                                onChanged: (value) {
-                                  if (value.length == 1) {
-                                    FocusScope.of(context).nextFocus();
-                                  }
-                                },
-                                cursorColor: Colors.black,
-                                onSaved: (pin2) {},
-                                decoration:
-                                    const InputDecoration(hintText: "*"),
-                                style:
-                                    Theme.of(context).textTheme.headlineMedium,
-                                keyboardType: TextInputType.number,
-                                textAlign: TextAlign.center,
-                                inputFormatters: [
-                                  LengthLimitingTextInputFormatter(1),
-                                  FilteringTextInputFormatter.digitsOnly,
-                                ],
-                              ),
+                            const SizedBox(height: 20),
+                            ElevatedButton(
+                              onPressed: () async {
+                                await FirebaseAuth.instance.currentUser
+                                    ?.reload();
+                                if (FirebaseAuth
+                                        .instance.currentUser?.emailVerified ==
+                                    true) {
+                                  FirebaseFirestore.instance
+                                      .collection('users')
+                                      .doc(FirebaseAuth
+                                          .instance.currentUser?.uid)
+                                      .set({
+                                    'userName': widget.userName,
+                                    'phoneNum': widget.phoneNum,
+                                    'email': widget.email,
+                                    'balanceAmount': '0'
+                                  });
+                                  // ignore: use_build_context_synchronously
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => HomeScreen(
+                                                initialIndex: 1,
+                                                key: UniqueKey(),
+                                              )));
+                                } else {
+                                  // ignore: use_build_context_synchronously
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            "Email is not verified. Please Create acoount again.")),
+                                  );
+                                  FirebaseAuth.instance.currentUser?.delete();
+                                  // ignore: use_build_context_synchronously
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const SingupScreen()));
+                                }
+                              },
+                              child: const Text("Check Verification Status"),
                             ),
-                            SizedBox(
-                              height: 68,
-                              width: 64,
-                              child: TextFormField(
-                                onChanged: (value) {
-                                  if (value.length == 1) {
-                                    FocusScope.of(context).nextFocus();
-                                  }
-                                },
-                                cursorColor: Colors.black,
-                                onSaved: (pin3) {},
-                                decoration:
-                                    const InputDecoration(hintText: "*"),
-                                style:
-                                    Theme.of(context).textTheme.headlineMedium,
-                                keyboardType: TextInputType.number,
-                                textAlign: TextAlign.center,
-                                inputFormatters: [
-                                  LengthLimitingTextInputFormatter(1),
-                                  FilteringTextInputFormatter.digitsOnly,
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              height: 68,
-                              width: 64,
-                              child: TextFormField(
-                                onChanged: (value) {
-                                  if (value.length == 1) {
-                                    FocusScope.of(context).nextFocus();
-                                  }
-                                },
-                                cursorColor: Colors.black,
-                                onSaved: (pin4) {},
-                                decoration:
-                                    const InputDecoration(hintText: "*"),
-                                style:
-                                    Theme.of(context).textTheme.headlineLarge,
-                                keyboardType: TextInputType.number,
-                                textAlign: TextAlign.center,
-                                inputFormatters: [
-                                  LengthLimitingTextInputFormatter(1),
-                                  FilteringTextInputFormatter.digitsOnly,
-                                ],
-                              ),
-                            ),
-                          ]),
-                      const SizedBox(
-                        height: 30.0,
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const HomeScreen()));
-                        },
-                        child: const Card(
-                          color: Colors.black,
-                          // margin: EdgeInsets.symmetric(
-                          //     vertical: 2.0, horizontal: 25.0),
-                          child: Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: Text(
-                              'VERIFY',
-                              style: TextStyle(
-                                fontSize: 30.0,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
+                          ],
                         ),
                       ),
                     ],

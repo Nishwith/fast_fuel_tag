@@ -1,20 +1,22 @@
 import 'dart:ui';
-import 'package:fast_fuel_tag/screens/file_locker/file_upload.dart';
-import 'package:fast_fuel_tag/screens/file_locker/file_view.dart';
-import 'package:fast_fuel_tag/screens/home_pages/homescreen.dart';
+import 'package:fast_fuel_tag/screens/home_pages/file_view.dart';
+import 'package:fast_fuel_tag/screens/home_pages/transaction.dart';
+import 'package:fast_fuel_tag/screens/home_pages/drawer.dart';
 import 'package:flutter/material.dart';
 
 class FileLocker extends StatefulWidget {
-  const FileLocker({super.key});
-
+  const FileLocker({Key? key, required this.vehicleNumber}) : super(key: key);
+  final String vehicleNumber;
   @override
   State<FileLocker> createState() => _FileLockerState();
 }
 
 class _FileLockerState extends State<FileLocker> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: _scaffoldKey,
         extendBodyBehindAppBar: true,
         appBar: AppBar(
           elevation: 0,
@@ -26,30 +28,26 @@ class _FileLockerState extends State<FileLocker> {
               Navigator.pop(context);
             },
           ),
-          title: const Text(
-            'FileLocker',
-            style: TextStyle(
+          title: Text(
+            widget.vehicleNumber,
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 34,
               fontFamily: 'Inter',
-              //we need to add fonts
               fontWeight: FontWeight.w700,
             ),
           ),
           actions: [
             IconButton(
-              iconSize: 34,
-              icon: const Icon(Icons.menu),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomeScreen()),
-                );
-              },
-            ),
+                iconSize: 34,
+                icon: const Icon(Icons.menu),
+                onPressed: () {
+                  _scaffoldKey.currentState?.openDrawer();
+                })
           ],
           centerTitle: true,
         ),
+        drawer: const CustomDrawer(),
         body: Container(
             width: double.infinity,
             height: double.infinity,
@@ -94,7 +92,8 @@ class _FileLockerState extends State<FileLocker> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const fileView()),
+                                    builder: (context) => fileView(
+                                        vehicleNumber: widget.vehicleNumber)),
                               );
                             },
                             child: Padding(
@@ -122,7 +121,6 @@ class _FileLockerState extends State<FileLocker> {
                                           style: TextStyle(
                                             color: Colors.black,
                                             fontSize: 20.0,
-                                            //fontFamily: 'Inter',//font to be implemented
                                             fontWeight: FontWeight.w800,
                                           ),
                                         ),
@@ -141,7 +139,8 @@ class _FileLockerState extends State<FileLocker> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const FileUpload()),
+                                    builder: (context) => TranactionPage(
+                                        vehicleNumber: widget.vehicleNumber)),
                               );
                             },
                             child: Padding(
@@ -166,7 +165,7 @@ class _FileLockerState extends State<FileLocker> {
                                     children: [
                                       Center(
                                         child: Text(
-                                          'Upload Documents',
+                                          'View Transactions',
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 20.0,
