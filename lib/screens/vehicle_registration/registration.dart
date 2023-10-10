@@ -1,14 +1,12 @@
 import 'dart:io';
 import 'dart:ui';
-import 'package:fast_fuel_tag/screens/home_pages/homescreen.dart';
-import 'package:fast_fuel_tag/screens/home_pages/vehicles_page.dart';
+import 'package:fast_fuel_tag/screens/home_pages/drawer.dart';
 import 'package:fast_fuel_tag/screens/vehicle_registration/registration_pay.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-// ignore: depend_on_referenced_packages
-import 'package:path/path.dart' as path;
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RegistrationPage extends StatefulWidget {
@@ -20,18 +18,31 @@ class RegistrationPage extends StatefulWidget {
 
 class _RegistrationPageState extends State<RegistrationPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   // ignore: prefer_typing_uninitialized_variables
   var selectedVehicleType;
+  late String uid;
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      uid = user.uid;
+    } else {}
+  }
+
   bool isLoading = false;
   final List<String> _vehicle = <String>[
     'Two Wheeler',
     'Geared Two Wheeler',
     'Four Wheeler',
-    'Heavy Vehicle',
   ];
   TextEditingController vehicleNumberController = TextEditingController();
   String vehicleNumber = '';
   PlatformFile? vehicleRC;
+  PlatformFile? vehicleInsurance;
+  PlatformFile? vehiclePollutionCertificate;
   PlatformFile? drivingLicense;
   bool _showAppBar = true;
   final ScrollController _scrollController = ScrollController();
@@ -61,7 +72,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
   }
 
   bool allFilesSelected() {
-    return vehicleRC != null && drivingLicense != null;
+    return vehicleRC != null &&
+        drivingLicense != null &&
+        vehiclePollutionCertificate != null &&
+        vehicleInsurance != null;
   }
 
   Future uploadFiles() async {
@@ -72,11 +86,17 @@ class _RegistrationPageState extends State<RegistrationPage> {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       return;
     }
-
+    final List<PlatformFile> files = [
+      vehicleRC!,
+      drivingLicense!,
+      vehicleInsurance!,
+      vehiclePollutionCertificate!
+    ];
     final List<Future<void>> uploadFutures = [];
-
-    uploadFutures.add(uploadFile(vehicleRC!));
-    uploadFutures.add(uploadFile(drivingLicense!));
+    for (var file in files) {
+      String fileName = '';
+      uploadFutures.add(uploadFile(file, fileName));
+    }
 
     await Future.wait(uploadFutures);
 
@@ -92,30 +112,21 @@ class _RegistrationPageState extends State<RegistrationPage> {
     return _pattern.hasMatch(input);
   }
 
-  Future<String?> uploadFile(PlatformFile file) async {
-    final fileName = path.basename(file.path!);
+  Future<String?> uploadFile(PlatformFile file, String fileName) async {
     String? filePath;
 
     try {
-      filePath = 'RegisterUsers/$vehicleNumber/$fileName';
+      filePath = 'RegisteredVehicles/$vehicleNumber/$uid/$fileName';
       final ref = FirebaseStorage.instance.ref().child(filePath);
       final fileToUpload = File(file.path!);
-
       await ref.putFile(fileToUpload);
 
       // Get the download URL of the uploaded file
       final downloadUrl = await ref.getDownloadURL();
       return downloadUrl;
     } catch (e) {
-      print('Error uploading file: $e');
       return null;
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_onScroll);
   }
 
   @override
@@ -151,15 +162,23 @@ class _RegistrationPageState extends State<RegistrationPage> {
       });
       try {
         CollectionReference vehiclesCollection =
-            FirebaseFirestore.instance.collection('vehicles');
-        DocumentReference newVehicleDoc =
-            vehiclesCollection.doc('$vehicleNumber-Pending');
+            FirebaseFirestore.instance.collection('registeredVehicles');
+        DocumentReference newVehicleDoc = vehiclesCollection
+            .doc('$vehicleNumber-Pending')
+            .collection(uid)
+            .doc(vehicleNumber);
+        String? vicUrl = await uploadFile(vehicleInsurance!, 'VIC');
+        String? vpcUrl = await uploadFile(vehiclePollutionCertificate!, 'VPC');
+        String? vrcUrl = await uploadFile(vehicleRC!, 'VRC');
+        String? udlUrl = await uploadFile(drivingLicense!, 'UDL');
 
         Map<String, dynamic> vehicleData = {
           'vehicleNumber': vehicleNumber,
           'vehicleType': selectedVehicleType,
-          'rcDownloadUrl': await uploadFile(vehicleRC!),
-          'licenseDownloadUrl': await uploadFile(drivingLicense!),
+          'VRC': vrcUrl,
+          'UDL': udlUrl,
+          'VIC': vicUrl,
+          'VPC': vpcUrl,
           'paymentStatus': 'Pending',
         };
         await newVehicleDoc.set(vehicleData);
@@ -170,16 +189,23 @@ class _RegistrationPageState extends State<RegistrationPage> {
           MaterialPageRoute(
               builder: (context) => RegistrationPay(
                     vehicleNumber: vehicleNumber,
+                    uid: uid,
+                    selectedVehicleType: selectedVehicleType,
+                    udl: udlUrl!,
+                    vic: vicUrl!,
+                    vpc: vpcUrl!,
+                    vrc: vrcUrl!,
                   )),
         );
+
         setState(() {
-          selectedVehicleType = null;
           vehicleRC = null;
+          vehicleInsurance = null;
+          vehiclePollutionCertificate = null;
           drivingLicense = null;
           isLoading = false;
         });
       } catch (e) {
-        print('Error storing data: $e');
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
               content: Text('An error occurred. Please try again later.')),
@@ -195,6 +221,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
         return false;
       },
       child: Scaffold(
+          key: _scaffoldKey,
           extendBodyBehindAppBar: true,
           appBar: _showAppBar
               ? AppBar(
@@ -212,16 +239,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   ),
                   actions: [
                     IconButton(
-                      iconSize: 34,
-                      icon: const Icon(Icons.menu),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const HomeScreen()),
-                        );
-                      },
-                    ),
+                        iconSize: 34,
+                        icon: const Icon(Icons.menu),
+                        onPressed: () {
+                          _scaffoldKey.currentState?.openDrawer();
+                        })
                   ],
                   centerTitle: true,
                 )
@@ -229,6 +251,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   preferredSize: Size.zero,
                   child: Container(),
                 ),
+          drawer: const CustomDrawer(),
           body: Form(
               key: _formKey,
               child: Container(
@@ -249,7 +272,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       child: BackdropFilter(
                         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
                         child: Container(
-                          height: MediaQuery.of(context).size.height,
+                          height: MediaQuery.of(context).size.height * 1.3,
                           decoration: ShapeDecoration(
                             color: const Color.fromARGB(255, 255, 255, 255)
                                 .withOpacity(0.35),
@@ -573,6 +596,174 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                                                 FontWeight.w200,
                                                           ),
                                                         )),
+                                            ],
+                                          ),
+                                          const Icon(
+                                            Icons.cloud_upload,
+                                            size: 40,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  selectFile((file) =>
+                                      setState(() => vehicleInsurance = file));
+                                },
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 0, 0, 25),
+                                  child: Container(
+                                    width:
+                                        MediaQuery.of(context).size.width / 1.2,
+                                    height: 65,
+                                    clipBehavior: Clip.antiAlias,
+                                    decoration: ShapeDecoration(
+                                      color: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(14),
+                                      ),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              const Padding(
+                                                padding: EdgeInsets.all(2.0),
+                                                child: Text(
+                                                  'Vehicle Insurance Certificate',
+                                                  style: TextStyle(
+                                                    color: Color.fromARGB(
+                                                        168, 0, 0, 0),
+                                                    fontSize: 14,
+                                                    fontFamily: 'Inter',
+                                                    fontWeight: FontWeight.w800,
+                                                  ),
+                                                ),
+                                              ),
+                                              Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(2.0),
+                                                  child: vehicleInsurance !=
+                                                          null
+                                                      ? const Text(
+                                                          'Selected',
+                                                          style: TextStyle(
+                                                            color:
+                                                                Colors.purple,
+                                                            fontSize: 15,
+                                                            fontFamily: 'Inter',
+                                                            fontWeight:
+                                                                FontWeight.w200,
+                                                          ),
+                                                        )
+                                                      : const Text(
+                                                          'Upload Vehicle Insurance Certificate',
+                                                          style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 15,
+                                                            fontFamily: 'Inter',
+                                                            fontWeight:
+                                                                FontWeight.w200,
+                                                          ),
+                                                        )),
+                                            ],
+                                          ),
+                                          const Icon(
+                                            Icons.cloud_upload,
+                                            size: 40,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  selectFile((file) => setState(() =>
+                                      vehiclePollutionCertificate = file));
+                                },
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 0, 0, 25),
+                                  child: Container(
+                                    width:
+                                        MediaQuery.of(context).size.width / 1.2,
+                                    height: 65,
+                                    clipBehavior: Clip.antiAlias,
+                                    decoration: ShapeDecoration(
+                                      color: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(14),
+                                      ),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              const Padding(
+                                                padding: EdgeInsets.all(2.0),
+                                                child: Text(
+                                                  'Vehicle Pollution Certificate',
+                                                  style: TextStyle(
+                                                    color: Color.fromARGB(
+                                                        168, 0, 0, 0),
+                                                    fontSize: 14,
+                                                    fontFamily: 'Inter',
+                                                    fontWeight: FontWeight.w800,
+                                                  ),
+                                                ),
+                                              ),
+                                              Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(2.0),
+                                                  child:
+                                                      vehiclePollutionCertificate !=
+                                                              null
+                                                          ? const Text(
+                                                              'Selected',
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .purple,
+                                                                fontSize: 15,
+                                                                fontFamily:
+                                                                    'Inter',
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w200,
+                                                              ),
+                                                            )
+                                                          : const Text(
+                                                              'Upload Vehicle Pollution Certificate',
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize: 15,
+                                                                fontFamily:
+                                                                    'Inter',
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w200,
+                                                              ),
+                                                            )),
                                             ],
                                           ),
                                           const Icon(

@@ -1,6 +1,6 @@
 import 'dart:ui';
-import 'package:fast_fuel_tag/screens/home_pages/homescreen.dart';
-import 'package:fast_fuel_tag/screens/vehicle_registration/registration.dart';
+import 'package:fast_fuel_tag/screens/home_pages/drawer.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
@@ -8,23 +8,38 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 // ignore: camel_case_types
 class fileView extends StatefulWidget {
-  const fileView({super.key});
-
+  const fileView({super.key, required this.vehicleNumber});
+  final String vehicleNumber;
   @override
   State<fileView> createState() => _fileViewState();
 }
 
 // ignore: camel_case_types
 class _fileViewState extends State<fileView> {
+  String? uid;
+
+  @override
+  void initState() {
+    super.initState();
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      uid = user.uid;
+    } else {}
+  }
+
   bool isLoading = false;
   Future<String?> getFileUrl(String fileName) async {
     // final extension = getExtension(fileName);
-    final ref = FirebaseStorage.instance.ref().child('00001/$fileName');
+    final ref = FirebaseStorage.instance
+        .ref()
+        .child('RegisteredVehicles/${widget.vehicleNumber}/$uid/$fileName');
     return await ref.getDownloadURL();
   }
 
   Future<String?> getExtension(String fileName) async {
-    final ref = FirebaseStorage.instance.ref().child('00001/$fileName');
+    final ref = FirebaseStorage.instance
+        .ref()
+        .child('RegisteredVehicles/${widget.vehicleNumber}/$uid/$fileName');
     final metadata = await ref.getMetadata();
     final contentType = metadata.contentType;
     String? extension;
@@ -57,9 +72,12 @@ class _fileViewState extends State<fileView> {
     } else {}
   }
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: _scaffoldKey,
         extendBodyBehindAppBar: true,
         appBar: AppBar(
           elevation: 0,
@@ -83,18 +101,15 @@ class _fileViewState extends State<fileView> {
           ),
           actions: [
             IconButton(
-              iconSize: 34,
-              icon: const Icon(Icons.menu),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomeScreen()),
-                );
-              },
-            ),
+                iconSize: 34,
+                icon: const Icon(Icons.menu),
+                onPressed: () {
+                  _scaffoldKey.currentState?.openDrawer();
+                })
           ],
           centerTitle: true,
         ),
+        drawer: const CustomDrawer(),
         body: Container(
             width: double.infinity,
             height: double.infinity,

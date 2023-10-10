@@ -1,13 +1,27 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fast_fuel_tag/screens/home_pages/vehicles_page.dart';
+import 'package:fast_fuel_tag/screens/home_pages/homescreen.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:flutter/rendering.dart';
 
 class RegistrationPay extends StatefulWidget {
-  const RegistrationPay({Key? key, required this.vehicleNumber})
+  const RegistrationPay(
+      {Key? key,
+      required this.vehicleNumber,
+      required this.uid,
+      required this.vrc,
+      required this.udl,
+      required this.vic,
+      required this.vpc,
+      required this.selectedVehicleType})
       : super(key: key);
   final String vehicleNumber;
+  final String uid;
+  final String vrc;
+  final String udl;
+  final String vic;
+  final String vpc;
+  final String selectedVehicleType;
 
   @override
   State<RegistrationPay> createState() => _RegistrationPayState();
@@ -16,26 +30,59 @@ class RegistrationPay extends StatefulWidget {
 class _RegistrationPayState extends State<RegistrationPay> {
   bool isLoading = false;
   bool _showAppBar = true;
-  String vehicleNumber = '';
+  late String vehicleNumber;
+  late String vrc;
+  late String udl;
+  late String vic;
+  late String vpc;
+  late String uid;
+  late String typeCode;
+  late String selectedVehicleType;
+
   final ScrollController _scrollController = ScrollController();
-  void _updatePaymentStatus(BuildContext context, String vehicleNumber) async {
+  void _updatePaymentStatus(BuildContext context, String vehicleNumber,
+      String uid, String selectedVehicleType) async {
     try {
       setState(() {
         isLoading = true;
       });
+
       DocumentReference oldVehicleDoc = FirebaseFirestore.instance
-          .collection('vehicles')
-          .doc('$vehicleNumber-Pending');
+          .collection('registeredVehicles')
+          .doc('$vehicleNumber-Pending/$uid/$vehicleNumber');
       DocumentReference newVehicleDoc = FirebaseFirestore.instance
-          .collection('vehicles')
-          .doc('$vehicleNumber-paid');
+          .collection('registeredVehicles')
+          .doc("$vehicleNumber-Paid/$uid/$vehicleNumber");
       DocumentSnapshot oldVehicleSnapshot = await oldVehicleDoc.get();
       Map<String, dynamic> vehicleData =
           oldVehicleSnapshot.data() as Map<String, dynamic>;
       vehicleData['paymentStatus'] = 'Paid';
       await newVehicleDoc.set(vehicleData);
       await oldVehicleDoc.delete();
-
+      if (selectedVehicleType == 'Two Wheeler') {
+        typeCode = "2";
+      } else if (selectedVehicleType == 'Geared Two Wheeler') {
+        typeCode = "2g";
+      } else if (selectedVehicleType == 'Four Wheeler') {
+        typeCode = "4";
+      } else {
+        typeCode = "2g";
+      }
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .collection('vehicles')
+          .doc(vehicleNumber)
+          .set({
+        'vehicleNum': vehicleNumber,
+        'vehicleType': selectedVehicleType,
+        'typeCode': typeCode,
+        'RFID': 'In-process',
+        'VRC': vrc,
+        'VIC': vic,
+        'VPC': vpc,
+        'UDL': udl,
+      });
       const snackBar = SnackBar(
         content: Text('Payment successful. Payment status updated.'),
       );
@@ -44,13 +91,16 @@ class _RegistrationPayState extends State<RegistrationPay> {
       // ignore: use_build_context_synchronously
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const YourVehicles()),
+        MaterialPageRoute(
+            builder: (context) => const HomeScreen(
+                  initialIndex: 1,
+                )),
       );
+
       setState(() {
         isLoading = false;
       });
     } catch (e) {
-      print('Error updating payment status: $e');
       const snackBar = SnackBar(
         content: Text('An error occurred while updating payment status.'),
       );
@@ -62,6 +112,12 @@ class _RegistrationPayState extends State<RegistrationPay> {
   void initState() {
     super.initState();
     vehicleNumber = widget.vehicleNumber;
+    uid = widget.uid;
+    vrc = widget.vrc;
+    vic = widget.vic;
+    vpc = widget.vpc;
+    udl = widget.udl;
+    selectedVehicleType = widget.selectedVehicleType;
     _scrollController.addListener(_onScroll);
   }
 
@@ -98,13 +154,7 @@ class _RegistrationPayState extends State<RegistrationPay> {
             ? AppBar(
                 elevation: 0,
                 backgroundColor: Colors.transparent,
-                leading: IconButton(
-                  iconSize: 34,
-                  icon: const Icon(Icons.arrow_back),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
+                leading: Container(),
                 title: const Text(
                   'REGISTRATION',
                   style: TextStyle(
@@ -114,15 +164,6 @@ class _RegistrationPayState extends State<RegistrationPay> {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                actions: [
-                  IconButton(
-                    iconSize: 34,
-                    icon: const Icon(Icons.menu),
-                    onPressed: () {
-                      //navigate to some other page
-                    },
-                  ),
-                ],
                 centerTitle: true,
               )
             : PreferredSize(
@@ -145,23 +186,6 @@ class _RegistrationPayState extends State<RegistrationPay> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.all(40.0),
-                    child: SizedBox(
-                      child: Text(
-                        'Owner Name :User Name',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 22,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  // padding: const EdgeInsets.only(top: 70),
                   ClipRect(
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
@@ -248,7 +272,8 @@ class _RegistrationPayState extends State<RegistrationPay> {
                             ),
                             InkWell(
                               onTap: () {
-                                _updatePaymentStatus(context, vehicleNumber);
+                                _updatePaymentStatus(context, vehicleNumber,
+                                    uid, selectedVehicleType);
                               },
                               child: Padding(
                                 padding: const EdgeInsets.all(9.0),

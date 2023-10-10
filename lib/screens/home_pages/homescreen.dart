@@ -1,4 +1,3 @@
-import 'package:fast_fuel_tag/screens/file_locker/file_locker.dart';
 import 'package:fast_fuel_tag/screens/home_pages/recharge.dart';
 import 'package:fast_fuel_tag/screens/home_pages/vehicles_page.dart';
 import 'package:fast_fuel_tag/screens/vehicle_registration/registration.dart';
@@ -6,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  final int initialIndex;
+
+  const HomeScreen({Key? key, required this.initialIndex}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
@@ -14,12 +15,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late int index;
+
+  @override
+  void initState() {
+    super.initState();
+    index = widget.initialIndex;
+  }
+
   final items = const [
-    Icon(
-      Icons.file_open,
-      color: Colors.purple,
-      size: 40,
-    ),
     Icon(
       Icons.library_add_outlined,
       color: Colors.purple,
@@ -36,8 +40,6 @@ class _HomeScreenState extends State<HomeScreen> {
       size: 40,
     ),
   ];
-
-  int index = 2;
 
   @override
   Widget build(BuildContext context) {
@@ -78,19 +80,16 @@ class _HomeScreenState extends State<HomeScreen> {
     Widget widget;
     switch (index) {
       case 0:
-        widget = const FileLocker();
-        break;
-      case 1:
         widget = const RegistrationPage();
         break;
-      case 2:
+      case 1:
         widget = const YourVehicles();
         break;
-      case 3:
+      case 2:
         widget = const Recharge();
         break;
       default:
-        widget = const FileLocker();
+        widget = const YourVehicles();
         break;
     }
     return widget;
