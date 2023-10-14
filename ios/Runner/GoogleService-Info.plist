@@ -2,22 +2,18 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CLIENT_ID</key>
-	<string>490233824809-vekj3k0m6e1me8e6lk9jpgm7n3ta3oe5.apps.googleusercontent.com</string>
-	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.490233824809-vekj3k0m6e1me8e6lk9jpgm7n3ta3oe5</string>
 	<key>API_KEY</key>
-	<string>AIzaSyBBRpekc4Y62oiPIvBiVKcHjiyy1Obc5Hg</string>
+	<string>AIzaSyCOJRMuZcguGTuP-RuHBWHnYG0GydBT4Lw</string>
 	<key>GCM_SENDER_ID</key>
-	<string>490233824809</string>
+	<string>204496913997</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.example.fastFuelTag</string>
 	<key>PROJECT_ID</key>
-	<string>fastfueltag</string>
+	<string>fastfueltag-1ae14</string>
 	<key>STORAGE_BUCKET</key>
-	<string>fastfueltag.appspot.com</string>
+	<string>fastfueltag-1ae14.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:490233824809:ios:ae429c2cbf2975eda43e38</string>
+	<string>1:204496913997:ios:1963592f497f3c11bffe04</string>
 </dict>
 </plist>
