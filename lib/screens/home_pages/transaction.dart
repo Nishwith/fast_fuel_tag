@@ -21,7 +21,6 @@ class _TranactionPageState extends State<TranactionPage> {
   var transDoc;
   // ignore: non_constant_identifier_names
   String RFID = '';
-  // String vehiclesCode = '';
   final ScrollController _scrollController = ScrollController();
 
   @override

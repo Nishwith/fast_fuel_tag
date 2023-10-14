@@ -36,9 +36,13 @@ class _SigninState extends State<Signin> {
                   colorFilter:
                       ColorFilter.mode(Colors.transparent, BlendMode.color),
                   child: Padding(
-                    padding: EdgeInsets.fromLTRB(60.0, 30.0, 60.0, 0),
+                    padding: EdgeInsets.only(top: 50, bottom: 20),
                     child: Image(
-                      image: AssetImage('assets/images/logo.png'),
+                      image: AssetImage(
+                        'assets/images/logo.png',
+                      ),
+                      height: 150,
+                      width: 150,
                     ),
                   ),
                 ),

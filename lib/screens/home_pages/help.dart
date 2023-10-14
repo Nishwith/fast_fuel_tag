@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fast_fuel_tag/screens/home_pages/drawer.dart';
+import 'package:fast_fuel_tag/screens/home_pages/homescreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
@@ -13,6 +14,7 @@ class Help extends StatefulWidget {
 }
 
 class _HelpState extends State<Help> {
+  final TextEditingController _queryController = TextEditingController();
   bool _showAppBar = true;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -193,13 +195,13 @@ class _HelpState extends State<Help> {
                                                 BorderRadius.circular(14),
                                           ),
                                         ),
-                                        child: const Padding(
-                                          padding: EdgeInsets.all(8.0),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
                                           child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Padding(
+                                              const Padding(
                                                 padding: EdgeInsets.all(3.0),
                                                 child: Text(
                                                   'Help',
@@ -213,15 +215,16 @@ class _HelpState extends State<Help> {
                                                 ),
                                               ),
                                               TextField(
-                                                style: TextStyle(
+                                                controller: _queryController,
+                                                style: const TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 15,
                                                   fontFamily: 'Inter',
                                                   fontWeight: FontWeight.w200,
                                                 ),
                                                 keyboardType:
-                                                    TextInputType.number,
-                                                decoration: InputDecoration(
+                                                    TextInputType.text,
+                                                decoration: const InputDecoration(
                                                     hintText:
                                                         'Write your problem in brief'),
                                               ),
@@ -232,26 +235,33 @@ class _HelpState extends State<Help> {
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
-                                      child: Container(
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                1.2,
-                                        decoration: const BoxDecoration(
-                                          color: Colors.black,
-                                          borderRadius: BorderRadius.all(
-                                              (Radius.circular(15))),
-                                        ),
-                                        child: const Padding(
-                                          padding: EdgeInsets.fromLTRB(
-                                              25, 25, 25, 25),
-                                          child: Text(
-                                            'Raise ticket',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 22,
-                                                fontFamily: 'Inter',
-                                                fontWeight: FontWeight.w800),
+                                      child: InkWell(
+                                        onTap: () {
+                                          _onRaisedTicketPressed(
+                                              _queryController.text);
+                                        },
+                                        child: Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              1.2,
+                                          decoration: const BoxDecoration(
+                                            color: Colors.black,
+                                            borderRadius: BorderRadius.all(
+                                                (Radius.circular(15))),
+                                          ),
+                                          child: const Padding(
+                                            padding: EdgeInsets.fromLTRB(
+                                                25, 25, 25, 25),
+                                            child: Text(
+                                              'Raise ticket',
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 22,
+                                                  fontFamily: 'Inter',
+                                                  fontWeight: FontWeight.w800),
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -270,6 +280,58 @@ class _HelpState extends State<Help> {
             }
           }),
     );
+  }
+
+  Future<void> _onRaisedTicketPressed(String query) async {
+    if (query.trim().isEmpty) {
+      // If the TextField is empty, show a SnackBar
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Please fill your queries.'),
+      ));
+    } else {
+      try {
+        FirebaseAuth auth = FirebaseAuth.instance;
+        User? user = auth.currentUser;
+        if (user != null) {
+          String uid = user.uid;
+
+          // Reference to the Firestore collection "Queries" and document with user's UID
+          CollectionReference queriesCollection =
+              FirebaseFirestore.instance.collection('Queries');
+          DocumentReference userDocRef = queriesCollection.doc(uid);
+
+          // Add the query to the Firestore document
+          await userDocRef.set({
+            'query': query,
+            'timestamp': FieldValue.serverTimestamp(),
+          });
+
+          // Display a success message to the user
+          // ignore: use_build_context_synchronously
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Query submitted successfully!'),
+          ));
+          // ignore: use_build_context_synchronously
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => HomeScreen(
+                        initialIndex: 1,
+                        key: UniqueKey(),
+                      )));
+        } else {
+          // Handle the case where the user is not logged in
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('User not logged in.'),
+          ));
+        }
+      } catch (e) {
+        // Handle errors that occurred during the process
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Error: $e'),
+        ));
+      }
+    }
   }
 
   Future<String> _fetchUserName() async {
