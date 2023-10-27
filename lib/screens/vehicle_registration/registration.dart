@@ -1,17 +1,18 @@
 import 'dart:io';
 import 'dart:ui';
-import 'package:fast_fuel_tag/screens/home_pages/drawer.dart';
-import 'package:fast_fuel_tag/screens/home_pages/homescreen.dart';
-import 'package:fast_fuel_tag/screens/vehicle_registration/registration_pay.dart';
+import 'package:fastfueltag/screens/home_pages/drawer.dart';
+import 'package:fastfueltag/screens/home_pages/homescreen.dart';
+import 'package:fastfueltag/screens/vehicle_registration/registration_pay.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mime/mime.dart';
 
 class RegistrationPage extends StatefulWidget {
-  const RegistrationPage({super.key});
+  const RegistrationPage({Key? key});
 
   @override
   State<RegistrationPage> createState() => _RegistrationPageState();
@@ -23,6 +24,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   // ignore: prefer_typing_uninitialized_variables
   var selectedVehicleType;
   late String uid;
+
   @override
   void initState() {
     super.initState();
@@ -47,6 +49,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   PlatformFile? drivingLicense;
   bool _showAppBar = true;
   final ScrollController _scrollController = ScrollController();
+
   Future selectFile(Function(PlatformFile?) setFile) async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -67,7 +70,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
       const snackBar = SnackBar(
         content: Text('Please select an image or PDF file.'),
       );
-      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
@@ -95,7 +97,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
     ];
     final List<Future<void>> uploadFutures = [];
     for (var file in files) {
-      String fileName = '';
+      String fileName = "";
       uploadFutures.add(uploadFile(file, fileName));
     }
 
@@ -104,7 +106,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
     const snackBar = SnackBar(
       content: Text('Files uploaded successfully.'),
     );
-    // ignore: use_build_context_synchronously
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
@@ -117,10 +118,17 @@ class _RegistrationPageState extends State<RegistrationPage> {
     String? filePath;
 
     try {
-      filePath = 'RegisteredVehicles/$vehicleNumber/$uid/$fileName';
+      filePath =
+          'RegisteredVehicles/$vehicleNumber/$uid/$fileName'; // Include the extension in the file path
       final ref = FirebaseStorage.instance.ref().child(filePath);
       final fileToUpload = File(file.path!);
-      await ref.putFile(fileToUpload);
+
+      String? mimeType = lookupMimeType(file.path!);
+
+      await ref.putFile(
+        fileToUpload,
+        SettableMetadata(contentType: mimeType),
+      );
 
       // Get the download URL of the uploaded file
       final downloadUrl = await ref.getDownloadURL();
@@ -207,6 +215,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
           isLoading = false;
         });
       } catch (e) {
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
               content: Text('An error occurred. Please try again later.')),

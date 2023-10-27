@@ -1,6 +1,6 @@
-import 'package:fast_fuel_tag/screens/home_pages/recharge.dart';
-import 'package:fast_fuel_tag/screens/home_pages/vehicles_page.dart';
-import 'package:fast_fuel_tag/screens/vehicle_registration/registration.dart';
+import 'package:fastfueltag/screens/home_pages/recharge.dart';
+import 'package:fastfueltag/screens/home_pages/vehicles_page.dart';
+import 'package:fastfueltag/screens/vehicle_registration/registration.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 

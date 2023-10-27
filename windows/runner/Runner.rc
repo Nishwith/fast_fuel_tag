@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "fast_fuel_tag" "\0"
+            VALUE "CompanyName", "in.autoinnotech" "\0"
+            VALUE "FileDescription", "fastfueltag" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "fast_fuel_tag" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2023 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "fast_fuel_tag.exe" "\0"
-            VALUE "ProductName", "fast_fuel_tag" "\0"
+            VALUE "InternalName", "fastfueltag" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2023 in.autoinnotech. All rights reserved." "\0"
+            VALUE "OriginalFilename", "fastfueltag.exe" "\0"
+            VALUE "ProductName", "fastfueltag" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

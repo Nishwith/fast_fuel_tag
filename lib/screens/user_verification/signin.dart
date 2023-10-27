@@ -1,8 +1,8 @@
-import 'package:fast_fuel_tag/screens/user_verification/reset.dart';
-import 'package:fast_fuel_tag/screens/user_verification/reusable.dart';
+import 'package:fastfueltag/screens/user_verification/reset.dart';
+import 'package:fastfueltag/screens/user_verification/reusable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fast_fuel_tag/screens/home_pages/homescreen.dart';
-import 'package:fast_fuel_tag/screens/user_verification/singupscreen.dart';
+import 'package:fastfueltag/screens/home_pages/homescreen.dart';
+import 'package:fastfueltag/screens/user_verification/singupscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

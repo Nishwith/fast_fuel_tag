@@ -1,4 +1,4 @@
-package com.example.fast_fuel_tag
+package `in`.autoinnotech.fastfueltag
 
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine

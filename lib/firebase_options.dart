@@ -45,17 +45,17 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyCINGbILdQShLN8Nj10A-dipb1uVc2arrw',
-    appId: '1:204496913997:web:beb121b2d8bc8182bffe04',
+    appId: '1:204496913997:web:ddcf050c7698ca50bffe04',
     messagingSenderId: '204496913997',
     projectId: 'fastfueltag-1ae14',
     authDomain: 'fastfueltag-1ae14.firebaseapp.com',
     storageBucket: 'fastfueltag-1ae14.appspot.com',
-    measurementId: 'G-SGR6ZS6FYN',
+    measurementId: 'G-GZ77KBF37E',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBo01pFYzVWX_oQElW8D-w4PHyBkiVh6-0',
-    appId: '1:204496913997:android:cbb48c15a6be3cfdbffe04',
+    appId: '1:204496913997:android:d561a9ead93b087cbffe04',
     messagingSenderId: '204496913997',
     projectId: 'fastfueltag-1ae14',
     storageBucket: 'fastfueltag-1ae14.appspot.com',
@@ -63,19 +63,19 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCOJRMuZcguGTuP-RuHBWHnYG0GydBT4Lw',
-    appId: '1:204496913997:ios:1963592f497f3c11bffe04',
+    appId: '1:204496913997:ios:27aef9677399193ebffe04',
     messagingSenderId: '204496913997',
     projectId: 'fastfueltag-1ae14',
     storageBucket: 'fastfueltag-1ae14.appspot.com',
-    iosBundleId: 'com.example.fastFuelTag',
+    iosBundleId: 'in.autoinnotech.fastfueltag',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyCOJRMuZcguGTuP-RuHBWHnYG0GydBT4Lw',
-    appId: '1:204496913997:ios:64521e8f3967ec14bffe04',
+    appId: '1:204496913997:ios:64174dfd1e0d9115bffe04',
     messagingSenderId: '204496913997',
     projectId: 'fastfueltag-1ae14',
     storageBucket: 'fastfueltag-1ae14.appspot.com',
-    iosBundleId: 'com.example.fastFuelTag.RunnerTests',
+    iosBundleId: 'in.autoinnotech.fastfueltag.RunnerTests',
   );
 }

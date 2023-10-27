@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fast_fuel_tag/screens/home_pages/drawer.dart';
-import 'package:fast_fuel_tag/screens/home_pages/homescreen.dart';
+import 'package:fastfueltag/screens/home_pages/drawer.dart';
+import 'package:fastfueltag/screens/home_pages/homescreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
@@ -294,17 +294,16 @@ class _HelpState extends State<Help> {
         User? user = auth.currentUser;
         if (user != null) {
           String uid = user.uid;
-
-          // Reference to the Firestore collection "Queries" and document with user's UID
           CollectionReference queriesCollection =
               FirebaseFirestore.instance.collection('Queries');
-          DocumentReference userDocRef = queriesCollection.doc(uid);
+         DocumentReference userDocRef = queriesCollection.doc();
 
-          // Add the query to the Firestore document
-          await userDocRef.set({
-            'query': query,
-            'timestamp': FieldValue.serverTimestamp(),
-          });
+        await userDocRef.set({
+          'query': query,
+          'timestamp': FieldValue.serverTimestamp(),
+          'uid': uid,
+        });
+
 
           // Display a success message to the user
           // ignore: use_build_context_synchronously
@@ -326,7 +325,7 @@ class _HelpState extends State<Help> {
           ));
         }
       } catch (e) {
-        // Handle errors that occurred during the process
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('Error: $e'),
         ));

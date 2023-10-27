@@ -1,6 +1,6 @@
-import 'package:fast_fuel_tag/firebase_options.dart';
-import 'package:fast_fuel_tag/screens/home_pages/homescreen.dart';
-import 'package:fast_fuel_tag/screens/user_verification/signin.dart';
+import 'package:fastfueltag/firebase_options.dart';
+import 'package:fastfueltag/screens/home_pages/homescreen.dart';
+import 'package:fastfueltag/screens/user_verification/signin.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';

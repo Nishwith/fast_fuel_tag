@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:204496913997:android:cbb48c15a6be3cfdbffe04",
+        "mobilesdk_app_id": "1:204496913997:android:d561a9ead93b087cbffe04",
         "android_client_info": {
-          "package_name": "com.example.fast_fuel_tag"
+          "package_name": "in.autoinnotech.fastfueltag"
         }
       },
       "oauth_client": [],

@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fast_fuel_tag/screens/user_verification/reusable.dart';
-import 'package:fast_fuel_tag/screens/user_verification/verification_page.dart';
+import 'package:fastfueltag/screens/user_verification/reusable.dart';
+import 'package:fastfueltag/screens/user_verification/verification_page.dart';
 import 'package:flutter/material.dart';
 
 class SingupScreen extends StatefulWidget {
