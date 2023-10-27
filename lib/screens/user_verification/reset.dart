@@ -1,5 +1,5 @@
-import 'package:fast_fuel_tag/screens/user_verification/reusable.dart';
-import 'package:fast_fuel_tag/screens/user_verification/signin.dart';
+import 'package:fastfueltag/screens/user_verification/reusable.dart';
+import 'package:fastfueltag/screens/user_verification/signin.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -81,6 +81,7 @@ class _ResetPasswordState extends State<ResetPassword> {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => const Signin()));
     } catch (e) {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('User Not Found!'),

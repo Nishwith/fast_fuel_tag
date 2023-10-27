@@ -1,6 +1,6 @@
 {
-    "name": "fast_fuel_tag",
-    "short_name": "fast_fuel_tag",
+    "name": "fastfueltag",
+    "short_name": "fastfueltag",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

@@ -44,40 +44,38 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDHwKaUGn79hx-823GPW0QzaPGvcwQGh1s',
-    appId: '1:490233824809:web:a0b52d518e2eb6d6a43e38',
-    messagingSenderId: '490233824809',
-    projectId: 'fastfueltag',
-    authDomain: 'fastfueltag.firebaseapp.com',
-    storageBucket: 'fastfueltag.appspot.com',
-    measurementId: 'G-LM6FV9NKP7',
+    apiKey: 'AIzaSyCINGbILdQShLN8Nj10A-dipb1uVc2arrw',
+    appId: '1:204496913997:web:ddcf050c7698ca50bffe04',
+    messagingSenderId: '204496913997',
+    projectId: 'fastfueltag-1ae14',
+    authDomain: 'fastfueltag-1ae14.firebaseapp.com',
+    storageBucket: 'fastfueltag-1ae14.appspot.com',
+    measurementId: 'G-GZ77KBF37E',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCDADuiphQlYfwwMDMGYoVCRfqg87gpgQY',
-    appId: '1:490233824809:android:919cb115ae87f217a43e38',
-    messagingSenderId: '490233824809',
-    projectId: 'fastfueltag',
-    storageBucket: 'fastfueltag.appspot.com',
+    apiKey: 'AIzaSyBo01pFYzVWX_oQElW8D-w4PHyBkiVh6-0',
+    appId: '1:204496913997:android:d561a9ead93b087cbffe04',
+    messagingSenderId: '204496913997',
+    projectId: 'fastfueltag-1ae14',
+    storageBucket: 'fastfueltag-1ae14.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBBRpekc4Y62oiPIvBiVKcHjiyy1Obc5Hg',
-    appId: '1:490233824809:ios:ae429c2cbf2975eda43e38',
-    messagingSenderId: '490233824809',
-    projectId: 'fastfueltag',
-    storageBucket: 'fastfueltag.appspot.com',
-    iosClientId: '490233824809-vekj3k0m6e1me8e6lk9jpgm7n3ta3oe5.apps.googleusercontent.com',
-    iosBundleId: 'com.example.fastFuelTag',
+    apiKey: 'AIzaSyCOJRMuZcguGTuP-RuHBWHnYG0GydBT4Lw',
+    appId: '1:204496913997:ios:27aef9677399193ebffe04',
+    messagingSenderId: '204496913997',
+    projectId: 'fastfueltag-1ae14',
+    storageBucket: 'fastfueltag-1ae14.appspot.com',
+    iosBundleId: 'in.autoinnotech.fastfueltag',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBBRpekc4Y62oiPIvBiVKcHjiyy1Obc5Hg',
-    appId: '1:490233824809:ios:fc676839fc8dac7ea43e38',
-    messagingSenderId: '490233824809',
-    projectId: 'fastfueltag',
-    storageBucket: 'fastfueltag.appspot.com',
-    iosClientId: '490233824809-jf066c08411366mg05t7i5l843cf5dip.apps.googleusercontent.com',
-    iosBundleId: 'com.example.fastFuelTag.RunnerTests',
+    apiKey: 'AIzaSyCOJRMuZcguGTuP-RuHBWHnYG0GydBT4Lw',
+    appId: '1:204496913997:ios:64174dfd1e0d9115bffe04',
+    messagingSenderId: '204496913997',
+    projectId: 'fastfueltag-1ae14',
+    storageBucket: 'fastfueltag-1ae14.appspot.com',
+    iosBundleId: 'in.autoinnotech.fastfueltag.RunnerTests',
   );
 }

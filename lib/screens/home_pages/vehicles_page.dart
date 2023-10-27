@@ -1,8 +1,8 @@
 import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fast_fuel_tag/screens/home_pages/view_docs.dart';
-import 'package:fast_fuel_tag/screens/home_pages/homescreen.dart';
-import 'package:fast_fuel_tag/screens/home_pages/drawer.dart';
+import 'package:fastfueltag/screens/home_pages/view_docs.dart';
+import 'package:fastfueltag/screens/home_pages/homescreen.dart';
+import 'package:fastfueltag/screens/home_pages/drawer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';

@@ -1,16 +1,18 @@
 import 'dart:io';
 import 'dart:ui';
-import 'package:fast_fuel_tag/screens/home_pages/drawer.dart';
-import 'package:fast_fuel_tag/screens/vehicle_registration/registration_pay.dart';
+import 'package:fastfueltag/screens/home_pages/drawer.dart';
+import 'package:fastfueltag/screens/home_pages/homescreen.dart';
+import 'package:fastfueltag/screens/vehicle_registration/registration_pay.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mime/mime.dart';
 
 class RegistrationPage extends StatefulWidget {
-  const RegistrationPage({super.key});
+  const RegistrationPage({Key? key});
 
   @override
   State<RegistrationPage> createState() => _RegistrationPageState();
@@ -22,6 +24,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   // ignore: prefer_typing_uninitialized_variables
   var selectedVehicleType;
   late String uid;
+
   @override
   void initState() {
     super.initState();
@@ -46,6 +49,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   PlatformFile? drivingLicense;
   bool _showAppBar = true;
   final ScrollController _scrollController = ScrollController();
+
   Future selectFile(Function(PlatformFile?) setFile) async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -66,7 +70,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
       const snackBar = SnackBar(
         content: Text('Please select an image or PDF file.'),
       );
-      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
@@ -94,7 +97,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
     ];
     final List<Future<void>> uploadFutures = [];
     for (var file in files) {
-      String fileName = '';
+      String fileName = "";
       uploadFutures.add(uploadFile(file, fileName));
     }
 
@@ -103,7 +106,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
     const snackBar = SnackBar(
       content: Text('Files uploaded successfully.'),
     );
-    // ignore: use_build_context_synchronously
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
@@ -116,10 +118,17 @@ class _RegistrationPageState extends State<RegistrationPage> {
     String? filePath;
 
     try {
-      filePath = 'RegisteredVehicles/$vehicleNumber/$uid/$fileName';
+      filePath =
+          'RegisteredVehicles/$vehicleNumber/$uid/$fileName'; // Include the extension in the file path
       final ref = FirebaseStorage.instance.ref().child(filePath);
       final fileToUpload = File(file.path!);
-      await ref.putFile(fileToUpload);
+
+      String? mimeType = lookupMimeType(file.path!);
+
+      await ref.putFile(
+        fileToUpload,
+        SettableMetadata(contentType: mimeType),
+      );
 
       // Get the download URL of the uploaded file
       final downloadUrl = await ref.getDownloadURL();
@@ -206,6 +215,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
           isLoading = false;
         });
       } catch (e) {
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
               content: Text('An error occurred. Please try again later.')),
@@ -218,6 +228,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => HomeScreen(
+                      initialIndex: 1,
+                      key: UniqueKey(),
+                    )));
         return false;
       },
       child: Scaffold(
@@ -316,14 +333,17 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        const Padding(
-                                          padding: EdgeInsets.all(2.0),
+                                        Padding(
+                                          padding: const EdgeInsets.all(2.0),
                                           child: Text(
                                             'Vehicle Number',
                                             style: TextStyle(
-                                              color:
-                                                  Color.fromARGB(168, 0, 0, 0),
-                                              fontSize: 14,
+                                              color: const Color.fromARGB(
+                                                  168, 0, 0, 0),
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  28,
                                               fontFamily: 'Inter',
                                               fontWeight: FontWeight.w800,
                                             ),
@@ -338,10 +358,16 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                             fontWeight: FontWeight.w200,
                                           ),
                                           keyboardType: TextInputType.name,
-                                          decoration: const InputDecoration(
-                                            hintText:
-                                                'Enter your Vehicle Number',
-                                          ),
+                                          decoration: InputDecoration(
+                                              hintText:
+                                                  'Enter your Vehicle Number',
+                                              hintStyle: TextStyle(
+                                                  fontSize:
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .width /
+                                                          28,
+                                                  fontFamily: 'montserrat')),
                                           onChanged: (value) {
                                             setState(() {
                                               vehicleNumber =
@@ -429,11 +455,15 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                               },
                                               isExpanded: true,
                                               value: selectedVehicleType,
-                                              decoration: const InputDecoration(
+                                              decoration: InputDecoration(
                                                   hintText:
                                                       'Select your Vehicle Type',
                                                   hintStyle: TextStyle(
-                                                      fontSize: 14,
+                                                      fontSize:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width /
+                                                              28,
                                                       fontFamily:
                                                           'montserrat')),
                                               // ignore: body_might_complete_normally_nullable
@@ -506,12 +536,17 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                                                 FontWeight.w200,
                                                           ),
                                                         )
-                                                      : const Text(
+                                                      : Text(
                                                           'Upload Vehicle RC',
                                                           style: TextStyle(
                                                             color: Colors.black,
-                                                            fontSize: 15,
-                                                            fontFamily: 'Inter',
+                                                            fontSize: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width /
+                                                                28,
+                                                            fontFamily:
+                                                                'montserrat',
                                                             fontWeight:
                                                                 FontWeight.w200,
                                                           ),
@@ -558,14 +593,19 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              const Padding(
-                                                padding: EdgeInsets.all(2.0),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(2.0),
                                                 child: Text(
                                                   'Driving License',
                                                   style: TextStyle(
-                                                    color: Color.fromARGB(
+                                                    color: const Color.fromARGB(
                                                         168, 0, 0, 0),
-                                                    fontSize: 14,
+                                                    fontSize:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width /
+                                                            28,
                                                     fontFamily: 'Inter',
                                                     fontWeight: FontWeight.w800,
                                                   ),
@@ -586,12 +626,17 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                                                 FontWeight.w200,
                                                           ),
                                                         )
-                                                      : const Text(
+                                                      : Text(
                                                           'Upload Driving License',
                                                           style: TextStyle(
                                                             color: Colors.black,
-                                                            fontSize: 15,
-                                                            fontFamily: 'Inter',
+                                                            fontSize: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width /
+                                                                28,
+                                                            fontFamily:
+                                                                'montserrat',
                                                             fontWeight:
                                                                 FontWeight.w200,
                                                           ),
@@ -638,14 +683,19 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              const Padding(
-                                                padding: EdgeInsets.all(2.0),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(2.0),
                                                 child: Text(
                                                   'Vehicle Insurance Certificate',
                                                   style: TextStyle(
-                                                    color: Color.fromARGB(
+                                                    color: const Color.fromARGB(
                                                         168, 0, 0, 0),
-                                                    fontSize: 14,
+                                                    fontSize:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width /
+                                                            28,
                                                     fontFamily: 'Inter',
                                                     fontWeight: FontWeight.w800,
                                                   ),
@@ -667,12 +717,17 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                                                 FontWeight.w200,
                                                           ),
                                                         )
-                                                      : const Text(
+                                                      : Text(
                                                           'Upload Vehicle Insurance Certificate',
                                                           style: TextStyle(
                                                             color: Colors.black,
-                                                            fontSize: 15,
-                                                            fontFamily: 'Inter',
+                                                            fontSize: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width /
+                                                                28,
+                                                            fontFamily:
+                                                                'montserrat',
                                                             fontWeight:
                                                                 FontWeight.w200,
                                                           ),
@@ -719,14 +774,19 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              const Padding(
-                                                padding: EdgeInsets.all(2.0),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(2.0),
                                                 child: Text(
                                                   'Vehicle Pollution Certificate',
                                                   style: TextStyle(
-                                                    color: Color.fromARGB(
+                                                    color: const Color.fromARGB(
                                                         168, 0, 0, 0),
-                                                    fontSize: 14,
+                                                    fontSize:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width /
+                                                            28,
                                                     fontFamily: 'Inter',
                                                     fontWeight: FontWeight.w800,
                                                   ),
@@ -751,14 +811,18 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                                                         .w200,
                                                               ),
                                                             )
-                                                          : const Text(
+                                                          : Text(
                                                               'Upload Vehicle Pollution Certificate',
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .black,
-                                                                fontSize: 15,
+                                                                fontSize: MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .width /
+                                                                    28,
                                                                 fontFamily:
-                                                                    'Inter',
+                                                                    'montserrat',
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .w200,

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fast_fuel_tag/screens/home_pages/drawer.dart';
+import 'package:fastfueltag/screens/home_pages/drawer.dart';
+import 'package:fastfueltag/screens/home_pages/homescreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
@@ -53,6 +54,13 @@ class _RechargeState extends State<Recharge> {
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: () async {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => HomeScreen(
+                        initialIndex: 1,
+                        key: UniqueKey(),
+                      )));
           return false;
         },
         child: Scaffold(
@@ -118,7 +126,7 @@ class _RechargeState extends State<Recharge> {
                                       textAlign: TextAlign.center,
                                       style: const TextStyle(
                                         color: Colors.white,
-                                        fontSize: 21,
+                                        fontSize: 24,
                                         fontFamily: 'Inter',
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -127,11 +135,11 @@ class _RechargeState extends State<Recharge> {
                                       height: 5,
                                     ),
                                     Text(
-                                      'Balance Amount : ₹$balance',
+                                      'Balance Amount : ₹ $balance',
                                       textAlign: TextAlign.center,
                                       style: const TextStyle(
                                         color: Colors.white,
-                                        fontSize: 26,
+                                        fontSize: 24,
                                         fontFamily: 'Inter',
                                         fontWeight: FontWeight.w500,
                                       ),

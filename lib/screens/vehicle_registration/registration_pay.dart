@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fast_fuel_tag/screens/home_pages/homescreen.dart';
+import 'package:fastfueltag/screens/home_pages/homescreen.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:flutter/rendering.dart';
@@ -104,6 +104,7 @@ class _RegistrationPayState extends State<RegistrationPay> {
       const snackBar = SnackBar(
         content: Text('An error occurred while updating payment status.'),
       );
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }

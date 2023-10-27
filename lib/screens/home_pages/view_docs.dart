@@ -1,7 +1,7 @@
 import 'dart:ui';
-import 'package:fast_fuel_tag/screens/home_pages/file_view.dart';
-import 'package:fast_fuel_tag/screens/home_pages/transaction.dart';
-import 'package:fast_fuel_tag/screens/home_pages/drawer.dart';
+import 'package:fastfueltag/screens/home_pages/file_view.dart';
+import 'package:fastfueltag/screens/home_pages/transaction.dart';
+import 'package:fastfueltag/screens/home_pages/drawer.dart';
 import 'package:flutter/material.dart';
 
 class FileLocker extends StatefulWidget {

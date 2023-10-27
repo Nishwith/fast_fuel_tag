@@ -1,5 +1,5 @@
 import 'dart:ui';
-import 'package:fast_fuel_tag/screens/home_pages/drawer.dart';
+import 'package:fastfueltag/screens/home_pages/drawer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';

@@ -1,4 +1,4 @@
-# fast_fuel_tag
+# fastfueltag
 
 A new Flutter project.
 
