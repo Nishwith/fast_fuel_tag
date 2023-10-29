@@ -303,7 +303,7 @@ class _RechargeState extends State<Recharge> {
             await FirebaseFirestore.instance.collection('users').doc(uid).get();
         if (userDoc.exists) {
           userName = userDoc.get('userName');
-          balance = userDoc.get('balanceAmount');
+          balance = userDoc.get('balanceAmount').toString();
           setState(() {
             _isLoading = false;
           });
