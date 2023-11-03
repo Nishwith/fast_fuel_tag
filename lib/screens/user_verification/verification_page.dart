@@ -1,7 +1,7 @@
 import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fastfueltag/screens/home_pages/homescreen.dart';
-import 'package:fastfueltag/screens/user_verification/singupscreen.dart';
+import 'package:fastfueltag/screens/user_verification/SignUpscreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -108,7 +108,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                                     'userName': widget.userName,
                                     'phoneNum': widget.phoneNum,
                                     'email': widget.email,
-                                    'balanceAmount': '0'
+                                    'balanceAmount': 0
                                   });
                                   // ignore: use_build_context_synchronously
                                   Navigator.push(
@@ -131,7 +131,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const SingupScreen()));
+                                              const SignUpScreen()));
                                 }
                               },
                               child: const Text("Check Verification Status"),

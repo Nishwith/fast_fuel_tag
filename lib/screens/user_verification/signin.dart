@@ -1,8 +1,8 @@
 import 'package:fastfueltag/screens/user_verification/reset.dart';
 import 'package:fastfueltag/screens/user_verification/reusable.dart';
+import 'package:fastfueltag/screens/user_verification/SignUpscreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fastfueltag/screens/home_pages/homescreen.dart';
-import 'package:fastfueltag/screens/user_verification/singupscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -162,7 +162,7 @@ class _SigninState extends State<Signin> {
         GestureDetector(
           onTap: () {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const SingupScreen()));
+                MaterialPageRoute(builder: (context) => const SignUpScreen()));
           },
           child: const Text(
             " Create an Account",

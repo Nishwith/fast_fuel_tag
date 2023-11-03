@@ -3,14 +3,14 @@ import 'package:fastfueltag/screens/user_verification/reusable.dart';
 import 'package:fastfueltag/screens/user_verification/verification_page.dart';
 import 'package:flutter/material.dart';
 
-class SingupScreen extends StatefulWidget {
-  const SingupScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<SingupScreen> createState() => _SingupScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _SingupScreenState extends State<SingupScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _passwordTextController = TextEditingController();
   final TextEditingController _emailTextController = TextEditingController();
   final TextEditingController _phoneNumController = TextEditingController();

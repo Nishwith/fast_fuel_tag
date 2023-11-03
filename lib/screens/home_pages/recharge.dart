@@ -16,6 +16,7 @@ class Recharge extends StatefulWidget {
 class _RechargeState extends State<Recharge> {
   bool _showAppBar = true;
   bool _isLoading = true;
+  bool _isRechargeLoading = false;
   String userName = '';
   String balance = '';
   final ScrollController _scrollController = ScrollController();
@@ -49,6 +50,7 @@ class _RechargeState extends State<Recharge> {
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final TextEditingController _amountEntered = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -213,7 +215,7 @@ class _RechargeState extends State<Recharge> {
                                                   BorderRadius.circular(14),
                                             ),
                                           ),
-                                          child: const Padding(
+                                          child: Padding(
                                             padding: EdgeInsets.all(8.0),
                                             child: Column(
                                               crossAxisAlignment:
@@ -234,14 +236,15 @@ class _RechargeState extends State<Recharge> {
                                                   ),
                                                 ),
                                                 TextField(
+                                                  controller: _amountEntered,
+                                                  keyboardType:
+                                                      TextInputType.number,
                                                   style: TextStyle(
                                                     color: Colors.black,
                                                     fontSize: 15,
                                                     fontFamily: 'Inter',
                                                     fontWeight: FontWeight.w200,
                                                   ),
-                                                  keyboardType:
-                                                      TextInputType.number,
                                                   decoration: InputDecoration(
                                                       hintText:
                                                           'Enter the recharge amount'),
@@ -251,29 +254,58 @@ class _RechargeState extends State<Recharge> {
                                           ),
                                         ),
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              1.2,
-                                          decoration: const BoxDecoration(
-                                            color: Colors.black,
-                                            borderRadius: BorderRadius.all(
-                                                (Radius.circular(15))),
-                                          ),
-                                          child: const Padding(
-                                            padding: EdgeInsets.fromLTRB(
-                                                25, 25, 25, 25),
-                                            child: Text(
-                                              'Pay',
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 22,
-                                                  fontFamily: 'Inter',
-                                                  fontWeight: FontWeight.w800),
+                                      InkWell(
+                                        onTap: () async {
+                                          if (_amountEntered.text.isEmpty) {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(const SnackBar(
+                                                    content: Text(
+                                                        "Enter the Amount!")));
+                                          } else {
+                                            int amountEntered = int.tryParse(
+                                                _amountEntered.text)!;
+                                            if (amountEntered < 50) {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(const SnackBar(
+                                                      content: Text(
+                                                          "You must Recharge the Wallet more than 50 Rupees")));
+                                            } else {
+                                              recharge(
+                                                  amountEntered: amountEntered);
+                                            }
+                                          }
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                1.2,
+                                            decoration: const BoxDecoration(
+                                              color: Colors.black,
+                                              borderRadius: BorderRadius.all(
+                                                  (Radius.circular(15))),
+                                            ),
+                                            child: Padding(
+                                              padding: EdgeInsets.fromLTRB(
+                                                  25, 25, 25, 25),
+                                              child: _isRechargeLoading
+                                                  ? const Center(
+                                                      child:
+                                                          CircularProgressIndicator(),
+                                                    )
+                                                  : Text(
+                                                      'Pay',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 22,
+                                                          fontFamily: 'Inter',
+                                                          fontWeight:
+                                                              FontWeight.w800),
+                                                    ),
                                             ),
                                           ),
                                         ),
@@ -320,5 +352,39 @@ class _RechargeState extends State<Recharge> {
       });
       return {'Error': '$e'};
     }
+  }
+
+  Future<void> recharge({required int amountEntered}) async {
+    setState(() {
+      _isRechargeLoading = true;
+    });
+    int? balanceAmount = int.tryParse(balance);
+    int updatedBalance = amountEntered + balanceAmount!;
+    print(updatedBalance);
+    _amountEntered.clear();
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User? user = auth.currentUser;
+    if (user != null) {
+      String uid = user.uid;
+      var userDoc = FirebaseFirestore.instance.collection('users').doc(uid);
+      userDoc.update({'balanceAmount': updatedBalance}).then((value) {
+        print('Field updated successfully');
+      }).catchError((error) {
+        print('Failed to update field: $error');
+      });
+    }
+    //var url = '';
+    //var uri = Uri.parse(url);
+    //http.get or post(uri);
+    setState(() {
+      _isRechargeLoading = false;
+    });
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: ((context) => HomeScreen(
+                  initialIndex: 2,
+                  key: UniqueKey(),
+                ))));
   }
 }
