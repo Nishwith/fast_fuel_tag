@@ -5,39 +5,15 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:fastfueltag/screens/home_pages/homescreen.dart';
-import 'package:fastfueltag/screens/user_verification/signin.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:fastfueltag/main.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var email = prefs.getString('email');
-    var password = prefs.getString('password');
-    Widget initialScreen;
-    if (email != null && password != null) {
-      // Perform automatic login using email and password
-      try {
-        await FirebaseAuth.instance
-            .signInWithEmailAndPassword(email: email, password: password);
-        initialScreen = const HomeScreen(
-          initialIndex: 1,
-        );
-      } catch (e) {
-        // Handle login error, if any
-        initialScreen = const Signin();
-      }
-    } else {
-      initialScreen = const Signin();
-    }
-    await tester.pumpWidget(MyApp(initialScreen));
+    await tester.pumpWidget(MyApp());
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fastfueltag/screens/home_pages/homescreen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:flutter/rendering.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 class RegistrationPay extends StatefulWidget {
   const RegistrationPay(
@@ -38,7 +40,9 @@ class _RegistrationPayState extends State<RegistrationPay> {
   late String uid;
   late String typeCode;
   late String selectedVehicleType;
-
+  String userName = '';
+  String userMailId = '';
+  String userPhoneNum = '';
   final ScrollController _scrollController = ScrollController();
   void _updatePaymentStatus(BuildContext context, String vehicleNumber,
       String uid, String selectedVehicleType) async {
@@ -84,7 +88,7 @@ class _RegistrationPayState extends State<RegistrationPay> {
         'UDL': udl,
       });
       const snackBar = SnackBar(
-        content: Text('Payment successful. Payment status updated.'),
+        content: Text('Payment successful. Payment status updated!'),
       );
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -118,6 +122,7 @@ class _RegistrationPayState extends State<RegistrationPay> {
     vic = widget.vic;
     vpc = widget.vpc;
     udl = widget.udl;
+    _fetchUserData();
     selectedVehicleType = widget.selectedVehicleType;
     _scrollController.addListener(_onScroll);
   }
@@ -272,9 +277,68 @@ class _RegistrationPayState extends State<RegistrationPay> {
                               ),
                             ),
                             InkWell(
-                              onTap: () {
-                                _updatePaymentStatus(context, vehicleNumber,
-                                    uid, selectedVehicleType);
+                              onTap: () async {
+                                Razorpay _razorpay = Razorpay();
+                                var options = {
+                                  'key': 'rzp_test_XKKyytg2K0DDXG',
+                                  'amount': 500 * 100,
+                                  'currency': "INR",
+                                  'timeout': 240,
+                                  'name': 'Fast Fuel Tag',
+                                  'description':
+                                      'Registraring the user vehicle with 500.',
+                                  'retry': {'enabled': true, 'max_count': 1},
+                                  'send_sms_hash': true,
+                                  'prefill': {
+                                    'contact': userPhoneNum,
+                                    'email': userMailId,
+                                    'name': userName,
+                                  },
+                                  'external': {
+                                    'wallets': ['paytm', 'phonepe', 'googlepay']
+                                  }
+                                };
+                                try {
+                                  _razorpay.open(options);
+                                  _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS,
+                                      (PaymentSuccessResponse response) async {
+                                    setState(() {
+                                      isLoading = true;
+                                    });
+                                    _updatePaymentStatus(context, vehicleNumber,
+                                        uid, selectedVehicleType);
+                                  });
+                                  _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR,
+                                      (PaymentFailureResponse response) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text('Transaction Falied!')),
+                                    );
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: ((context) => HomeScreen(
+                                                  initialIndex: 0,
+                                                  key: UniqueKey(),
+                                                ))));
+                                  });
+                                  _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET,
+                                      (ExternalWalletResponse response) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                'Transaction using External Wallet!')));
+                                  });
+                                } catch (e) {
+                                  _razorpay.clear();
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: ((context) => HomeScreen(
+                                                initialIndex: 1,
+                                                key: UniqueKey(),
+                                              ))));
+                                }
                               },
                               child: Padding(
                                 padding: const EdgeInsets.all(9.0),
@@ -320,5 +384,20 @@ class _RegistrationPayState extends State<RegistrationPay> {
         ),
       ),
     );
+  }
+
+  Future<void> _fetchUserData() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User? user = auth.currentUser;
+    if (user != null) {
+      String uid = user.uid;
+      var userDoc =
+          await FirebaseFirestore.instance.collection('users').doc(uid).get();
+      if (userDoc.exists) {
+        userName = userDoc.get('userName');
+        userMailId = userDoc.get('email');
+        userPhoneNum = userDoc.get('phoneNum');
+      }
+    }
   }
 }

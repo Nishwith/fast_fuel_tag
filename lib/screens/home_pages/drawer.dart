@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fastfueltag/screens/home_pages/FAQS.dart';
 import 'package:fastfueltag/screens/home_pages/help.dart';
 import 'package:fastfueltag/screens/home_pages/homescreen.dart';
 import 'package:fastfueltag/screens/user_verification/signin.dart';
@@ -75,19 +76,19 @@ class CustomDrawer extends StatelessWidget {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const Help()),
+                        MaterialPageRoute(builder: (context) => const FAQs()),
                       );
                     },
                   ),
-                  ListTile(
-                    title: const Text('About Us'),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const Help()),
-                      );
-                    },
-                  ),
+                  // ListTile(
+                  //   title: const Text('About Us'),
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(builder: (context) => const Help()),
+                  //     );
+                  //   },
+                  // ),
                   ListTile(
                     title: const Text('LogOut'),
                     onTap: () async {

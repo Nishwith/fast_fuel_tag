@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fastfueltag/screens/home_pages/drawer.dart';
 import 'package:fastfueltag/screens/home_pages/homescreen.dart';
@@ -5,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:flutter/rendering.dart';
+import 'package:http/http.dart' as http;
 
 class Recharge extends StatefulWidget {
   const Recharge({Key? key}) : super(key: key);
@@ -18,9 +21,10 @@ class _RechargeState extends State<Recharge> {
   bool _isLoading = true;
   bool _isRechargeLoading = false;
   String userName = '';
+  String userMailId = '';
+  String userPhoneNum = '';
   String balance = '';
   final ScrollController _scrollController = ScrollController();
-
   @override
   void initState() {
     super.initState();
@@ -256,6 +260,7 @@ class _RechargeState extends State<Recharge> {
                                       ),
                                       InkWell(
                                         onTap: () async {
+                                          Razorpay _razorpay = Razorpay();
                                           if (_amountEntered.text.isEmpty) {
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(const SnackBar(
@@ -270,8 +275,85 @@ class _RechargeState extends State<Recharge> {
                                                       content: Text(
                                                           "You must Recharge the Wallet more than 50 Rupees")));
                                             } else {
-                                              recharge(
-                                                  amountEntered: amountEntered);
+                                              var options = {
+                                                'key':
+                                                    'rzp_test_XKKyytg2K0DDXG',
+                                                'amount': amountEntered * 100,
+                                                'currency': "INR",
+                                                'timeout': 240,
+                                                'name': 'Fast Fuel Tag',
+                                                'description':
+                                                    'Recharging the wallet of the user.',
+                                                'retry': {
+                                                  'enabled': true,
+                                                  'max_count': 1
+                                                },
+                                                'send_sms_hash': true,
+                                                'prefill': {
+                                                  'contact': userPhoneNum,
+                                                  'email': userMailId,
+                                                  'name': userName,
+                                                },
+                                                'external': {
+                                                  'wallets': [
+                                                    'paytm',
+                                                    'phonepe',
+                                                    'googlepay'
+                                                  ]
+                                                }
+                                              };
+                                              try {
+                                                _razorpay.open(options);
+                                                _razorpay.on(
+                                                    Razorpay
+                                                        .EVENT_PAYMENT_SUCCESS,
+                                                    (PaymentSuccessResponse
+                                                        response) async {
+                                                  setState(() {
+                                                    _isLoading = true;
+                                                    _isRechargeLoading = true;
+                                                  });
+                                                  await recharge(
+                                                      amountEntered:
+                                                          amountEntered);
+                                                });
+                                                _razorpay.on(
+                                                    Razorpay
+                                                        .EVENT_PAYMENT_ERROR,
+                                                    (PaymentFailureResponse
+                                                        response) {
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(
+                                                    const SnackBar(
+                                                        content: Text(
+                                                            'Transaction Falied')),
+                                                  );
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: ((context) =>
+                                                              HomeScreen(
+                                                                initialIndex: 2,
+                                                                key:
+                                                                    UniqueKey(),
+                                                              ))));
+                                                });
+                                                _razorpay.on(
+                                                    Razorpay
+                                                        .EVENT_EXTERNAL_WALLET,
+                                                    (ExternalWalletResponse
+                                                        response) {});
+                                              } catch (e) {
+                                                _razorpay.clear();
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: ((context) =>
+                                                            HomeScreen(
+                                                              initialIndex: 2,
+                                                              key: UniqueKey(),
+                                                            ))));
+                                              }
                                             }
                                           }
                                         },
@@ -335,6 +417,8 @@ class _RechargeState extends State<Recharge> {
             await FirebaseFirestore.instance.collection('users').doc(uid).get();
         if (userDoc.exists) {
           userName = userDoc.get('userName');
+          userMailId = userDoc.get('email');
+          userPhoneNum = userDoc.get('phoneNum');
           balance = userDoc.get('balanceAmount').toString();
           setState(() {
             _isLoading = false;
@@ -360,24 +444,34 @@ class _RechargeState extends State<Recharge> {
     });
     int? balanceAmount = int.tryParse(balance);
     int updatedBalance = amountEntered + balanceAmount!;
-    print(updatedBalance);
-    _amountEntered.clear();
     FirebaseAuth auth = FirebaseAuth.instance;
     User? user = auth.currentUser;
-    if (user != null) {
+    String uid = user!.uid;
+    var url =
+        'https://autoinnovationtech.000webhostapp.com/apptest.php?uid=$uid&amt=$amountEntered';
+    final uri = Uri.parse(url);
+    final response = await http.get(uri);
+    final body = response.body;
+    // ignore: non_constant_identifier_names
+    final Json = json.decode(body);
+    if (Json == "success") {
       String uid = user.uid;
       var userDoc = FirebaseFirestore.instance.collection('users').doc(uid);
       userDoc.update({'balanceAmount': updatedBalance}).then((value) {
-        print('Field updated successfully');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Transaction Successful')),
+        );
       }).catchError((error) {
-        print('Failed to update field: $error');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Transaction Falied')),
+        );
       });
-    }
-    //var url = '';
-    //var uri = Uri.parse(url);
-    //http.get or post(uri);
+      _amountEntered.clear();
+    } else {}
+
     setState(() {
       _isRechargeLoading = false;
+      _isLoading = false;
     });
     Navigator.push(
         context,
