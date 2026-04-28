@@ -1,37 +1,34 @@
-# ![Fast Fuel Tag Logo](assets/images/logo.png) Fast Fuel Tag
+# <img src="assets/images/logo.png" width="45" alt="Dine-A-Tap Logo" align="center"> Dine-A-Tap
 
-A comprehensive Flutter application designed to digitize vehicle fuel payments and streamline legal compliance. Fast Fuel Tag acts as a digital wallet and document vault, allowing vehicle owners to securely upload and link mandatory registration documents to their profiles.
+A full-stack, cashless smart canteen mobile application built with Flutter. Dine-A-Tap eliminates long cafeteria queues by bridging mobile pre-ordering with an automated, tap-to-retrieve physical hardware kiosk system.
 
 ## 📸 Application Previews
-
 <p align="center">
-  <img src="assets/UI/1.jpeg" width="250" alt="Fast Fuel Tag Screen 1">
-  <img src="assets/UI/2.jpeg" width="250" alt="Fast Fuel Tag Screen 2">
-  <img src="assets/UI/3.jpeg" width="250" alt="Fast Fuel Tag Screen 3">
-</p>
-<p align="center">
-  <img src="assets/UI/4.jpeg" width="250" alt="Fast Fuel Tag Screen 4">
-  <img src="assets/UI/5.jpeg" width="250" alt="Fast Fuel Tag Screen 5">
-  <img src="assets/UI/6.jpeg" width="250" alt="Fast Fuel Tag Screen 6">
+  <img src="assets/images/login.png" width="250" alt="Login Screen">
+  <img src="assets/images/home_appbar.png" width="250" alt="Home Screen">
+  <img src="assets/images/rechargeImg.png" width="250" alt="Recharge Wallet">
 </p>
 
 ## 🚀 Key Features
 
-* **Secure Document Vault:** Users can seamlessly upload PDFs or images of their RC, Driving License, Insurance, and Pollution Certificates using the `file_picker` package.
-* **Firebase Storage & Firestore Integration:** Uploaded files are securely hosted on Firebase Storage, with auto-generated URLs and vehicle metadata mapped to a real-time Cloud Firestore NoSQL database.
-* **Strict Data Validation:** Custom Regular Expressions (Regex) enforce strict validation rules for official vehicle license plate formats prior to cloud uploads.
-* **Persistent Sessions:** Frictionless login experiences achieved through Firebase Auth coupled with local `shared_preferences`.
-* **Glassmorphism UI:** A premium, modern aesthetic leveraging advanced UI techniques like `BackdropFilter` (blur effects) and a fluid `CurvedNavigationBar`.
+* **Dynamic Pre-Booking System:** Real-time menu fetching and complex cart state management utilizing custom RESTful APIs.
+* **Integrated Digital Wallet:** Secure, in-app wallet system with real-time balance verification, powered by **Razorpay** and **Cashfree** SDKs.
+* **Firebase Ecosystem:** * Secure user onboarding via **Firebase Auth**.
+  * Real-time background and foreground order alerts using **Firebase Cloud Messaging (FCM)**.
+  * User engagement tracking via **Firebase Analytics**.
+* **Seamless OTA Updates:** Integrated `in_app_update` for flexible, over-the-air feature pushes and bug fixes.
+* **Modern UI/UX:** Highly responsive design using advanced Flutter widgets like `CustomScrollView`, `SliverAppBar`, and `CarouselSlider`.
 
 ## 🛠️ Tech Stack
 
-* **Framework:** Flutter (Dart)
-* **Backend:** Firebase (Authentication, Cloud Firestore, Cloud Storage)
-* **Key Packages:** `file_picker`, `cloud_firestore`, `firebase_storage`, `shared_preferences`, `curved_navigation_bar`, `syncfusion_flutter_pdfviewer`
+* **Frontend:** Flutter (Dart)
+* **Backend:** Firebase, Custom REST API
+* **Payment Gateways:** Razorpay, Cashfree
 
 ## ⚙️ Setup & Installation
 
 1. Clone the repository.
-2. Add your Firebase `google-services.json` file to `android/app/`.
-3. Run `flutter pub get` to fetch all necessary packages.
-4. Run `flutter run` to launch the application.
+2. Ensure you have the `google-services.json` (Android) and `GoogleService-Info.plist` (iOS) files in their respective directories.
+3. Create a `.env` file in the root directory and add your API credentials.
+4. Run `flutter pub get` to install dependencies.
+5. Run `flutter run` to build the application.
